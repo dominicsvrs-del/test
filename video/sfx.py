@@ -11,12 +11,11 @@ def lp(x,c):     # one-pole lowpass, c can be array (0..1)
     return y
 def sweep(f0,f1,n,curve=2):
     f=f0+(f1-f0)*(np.linspace(0,1,n)**curve); return np.sin(2*np.pi*np.cumsum(f)/SR)
-def whoosh(len_=.55,big=False):
-    n=int(SR*len_); t=np.linspace(0,1,n); shape=np.sin(np.pi*t**(.7))**2
-    c=.02+.25*shape; x=lp(noise(n),c)-lp(lp(noise(n),c*.3),c*.3)*.5
-    x*=shape; 
-    if big: x+=.35*lp(noise(n),.01+.05*shape)*shape*3
-    return x/np.abs(x).max()*.8
+def whoosh(len_=.9,big=False):
+    # soft air whoosh: low-passed noise, smooth bell envelope, gentle filter sweep
+    n=int(SR*len_); t=np.linspace(0,1,n); shape=np.sin(np.pi*t)**3
+    c=.004+.045*shape; x=lp(lp(noise(n),c),c)*shape
+    return x/np.abs(x).max()*.55
 def pop():
     n=int(SR*.14); return sweep(900,180,n,.5)*env(n,.002,.035)*.9+lp(noise(n),.4)*env(n,.0005,.006)*.4
 def click():
@@ -48,7 +47,7 @@ GEN=dict(whoosh=lambda:whoosh(),swoosh=lambda:whoosh(.7,True),pop=pop,click=clic
 out=np.zeros((int(SR*DUR)+SR,2))
 for i,e in enumerate(json.load(open(sys.argv[1]))):
     x=GEN[e['type']]()*e['g']; s=int(max(e['t'],0)*SR)
-    if e['type'] in('whoosh','swoosh','suck'): s=max(0,s-int(SR*.18))  # peak lands on the cut
+    if e['type'] in('whoosh','swoosh','suck'): s=max(0,s-int(SR*.42))  # peak lands on the cut
     pan=np.sin(i*1.7)*.35; seg=out[s:s+len(x)]; m=len(seg)
     seg[:,0]+=x[:m]*(1-pan); seg[:,1]+=x[:m]*(1+pan)
 out=out[:int(SR*DUR)]; out=np.tanh(out*.9)*.9
