@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atelier Arendt Goldschmiede</title>
+<meta name="description" content="Atelier Arendt – Goldschmiedemeister für handgeschmiedete Ringe, Trauringe und Schmuckketten. Unikate aus Gold, Platin und Silber.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Jost:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Layout: dunkle Werkbank-Bühne; asymmetrisches Raster, Text links, Stück rechts; Punzen (Feingehalt) als wiederkehrendes Detail */
+:root {
+  --bg: #11140f;          /* Tannenschwarz */
+  --surface: #191d17;
+  --line: #2c3127;
+  --fg: #ece6d8;          /* Elfenbein */
+  --muted: #a39d8c;
+  --gold: #cfab63;        /* Champagnergold */
+  --gold-deep: #9b7a3b;
+  --metal-hi: #f6e2ac;
+  --metal-lo: #6f5424;
+  --display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --body: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.375rem;
+  --step-2: 2rem;
+  --step-3: clamp(2.25rem, 4.5vw, 3.25rem);
+  --step-4: clamp(2.75rem, 7.5vw, 5.75rem);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f3efe6; --surface: #fbf8f1; --line: #ddd5c4;
+    --fg: #1d1f1a; --muted: #6b6656;
+    --gold: #8a6a2c; --gold-deep: #6e5320;
+    --metal-hi: #f3dc9f; --metal-lo: #7a5b25;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f3efe6; --surface: #fbf8f1; --line: #ddd5c4;
+  --fg: #1d1f1a; --muted: #6b6656;
+  --gold: #8a6a2c; --gold-deep: #6e5320;
+  --metal-hi: #f3dc9f; --metal-lo: #7a5b25;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: var(--step-0);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { max-width: 100%; }
+a { color: inherit; }
+:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1.08; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+.eyebrow {
+  font-family: var(--mono); font-size: var(--step--1); letter-spacing: .16em;
+  text-transform: uppercase; color: var(--gold);
+}
+section { padding-block: clamp(4.5rem, 10vw, 8rem); }
+.rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+/* Navigation */
+.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1rem; }
+.brand { display: flex; align-items: baseline; gap: .6rem; text-decoration: none; }
+.brand b { font-family: var(--display); font-weight: 500; font-size: 1.35rem; letter-spacing: .04em; }
+.brand span { font-family: var(--mono); font-size: .7rem; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+.nav ul { display: flex; gap: clamp(1rem, 2.5vw, 2.25rem); list-style: none; margin: 0; padding: 0; }
+.nav ul a { text-decoration: none; font-size: .9rem; letter-spacing: .08em; color: var(--muted); transition: color .2s; }
+.nav ul a:hover { color: var(--fg); }
+@media (max-width: 760px) { .nav ul { display: none; } }
+
+.btn {
+  display: inline-flex; align-items: center; gap: .7rem;
+  padding: .95rem 1.6rem; border: 1px solid var(--gold); color: var(--fg);
+  background: transparent; font: 400 .85rem/1 var(--body); letter-spacing: .16em; text-transform: uppercase;
+  text-decoration: none; cursor: pointer; transition: background .25s, color .25s;
+}
+.btn:hover { background: var(--gold); color: var(--bg); }
+.btn.solid { background: var(--gold); color: var(--bg); }
+.btn.solid:hover { background: transparent; color: var(--fg); }
+
+/* Hero */
+.hero { padding-block: clamp(3rem, 7vw, 6rem) clamp(4rem, 8vw, 7rem); overflow: hidden; }
+.hero .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+.hero h1 { font-size: var(--step-4); letter-spacing: -.01em; }
+.hero h1 em { font-style: italic; color: var(--gold); }
+.hero-copy { display: grid; gap: 1.75rem; min-width: 0; }
+.hero-copy p.lead { max-width: 34rem; color: var(--muted); font-size: 1.15rem; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; }
+.hero-figure { position: relative; aspect-ratio: 1; max-width: 100%; }
+.hero-figure svg { width: 100%; height: 100%; display: block; }
+.hallmark {
+  position: absolute; right: 4%; bottom: 6%;
+  font-family: var(--mono); font-size: .75rem; letter-spacing: .12em; color: var(--muted);
+  border: 1px solid var(--line); padding: .35rem .6rem; background: var(--bg);
+}
+.glint { animation: glint 6s ease-in-out infinite; transform-origin: 50% 50%; }
+@keyframes glint { 0%, 100% { opacity: .25; } 50% { opacity: .9; } }
+.spin { animation: turn 40s linear infinite; transform-origin: 250px 250px; }
+@keyframes turn { to { transform: rotate(360deg); } }
+@media (max-width: 860px) {
+  .hero .wrap { grid-template-columns: 1fr; }
+  .hero-figure { max-width: 420px; margin-inline: auto; width: 100%; }
+}
+
+/* Kennzahlen */
+.facts { border-block: 1px solid var(--line); }
+.facts .wrap { display: grid; grid-template-columns: repeat(4, 1fr); }
+.fact { padding: 1.75rem 1rem; display: grid; gap: .25rem; border-left: 1px solid var(--line); }
+.fact:first-child { border-left: 0; }
+.fact strong { font-family: var(--display); font-weight: 400; font-size: var(--step-2); font-variant-numeric: tabular-nums; }
+.fact span { font-size: .85rem; color: var(--muted); letter-spacing: .04em; }
+@media (max-width: 700px) {
+  .facts .wrap { grid-template-columns: repeat(2, 1fr); }
+  .fact:nth-child(3) { border-left: 0; }
+  .fact:nth-child(n+3) { border-top: 1px solid var(--line); }
+}
+
+/* Über mich */
+.about .wrap { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.portrait {
+  aspect-ratio: 4 / 5; max-width: 100%; position: relative;
+  background:
+    radial-gradient(120% 80% at 30% 20%, color-mix(in srgb, var(--gold) 22%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--surface), var(--bg));
+  border: 1px solid var(--line); display: grid; place-items: center;
+}
+.portrait svg { width: 72%; }
+.portrait figcaption {
+  position: absolute; left: 1rem; bottom: 1rem; right: 1rem;
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; color: var(--muted); text-transform: uppercase;
+}
+.about-text { display: grid; gap: 1.5rem; min-width: 0; }
+.about-text h2 { font-size: var(--step-3); }
+.about-text p { max-width: 62ch; color: var(--muted); }
+.about-text p.first { color: var(--fg); font-size: 1.2rem; }
+.signature { font-family: var(--display); font-style: italic; font-size: 1.9rem; color: var(--gold); }
+@media (max-width: 860px) { .about .wrap { grid-template-columns: 1fr; } .portrait { max-width: 420px; } }
+
+/* Kollektionen */
+.section-head { display: flex; justify-content: space-between; align-items: end; gap: 2rem; flex-wrap: wrap; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+.section-head h2 { font-size: var(--step-3); max-width: 18ch; }
+.section-head p { max-width: 36rem; color: var(--muted); }
+.collections { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.collection { background: var(--bg); padding: clamp(1.5rem, 3vw, 2.5rem); display: grid; gap: 1.25rem; align-content: start; transition: background .3s; }
+.collection:hover { background: var(--surface); }
+.collection .art { aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; }
+.collection .art svg { width: 82%; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+.collection:hover .art svg { transform: scale(1.05) rotate(-4deg); }
+.collection h3 { font-size: var(--step-2); }
+.collection p { color: var(--muted); }
+.collection .meta { font-family: var(--mono); font-size: .75rem; letter-spacing: .1em; color: var(--gold); }
+@media (max-width: 900px) { .collections { grid-template-columns: 1fr; } .collection .art { max-width: 300px; } }
+
+/* Werkstatt / Prozess */
+.process { background: var(--surface); border-block: 1px solid var(--line); }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2rem; counter-reset: step; }
+.steps li { display: grid; gap: .75rem; align-content: start; padding-top: 1.5rem; border-top: 1px solid var(--gold-deep); counter-increment: step; min-width: 0; }
+.steps li::before { content: counter(step, upper-roman); font-family: var(--display); font-size: 1.6rem; color: var(--gold); }
+.steps h3 { font-size: var(--step-1); }
+.steps p { color: var(--muted); font-size: .95rem; }
+.steps .dur { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
+@media (max-width: 1000px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .steps { grid-template-columns: 1fr; } }
+
+/* Galerie */
+.filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2rem; }
+.filters button {
+  font: 400 .8rem/1 var(--body); letter-spacing: .14em; text-transform: uppercase;
+  padding: .7rem 1.1rem; border: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer;
+}
+.filters button[aria-pressed="true"] { border-color: var(--gold); color: var(--fg); }
+.gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+.piece { display: grid; gap: .8rem; margin: 0; }
+.piece .frame {
+  aspect-ratio: 4 / 5; max-width: 100%; display: grid; place-items: center; border: 1px solid var(--line);
+  background: radial-gradient(90% 70% at 50% 40%, var(--surface), var(--bg));
+  overflow: hidden;
+}
+.piece .frame svg { width: 70%; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+.piece:hover .frame svg { transform: scale(1.08); }
+.piece figcaption { display: grid; gap: .1rem; }
+.piece figcaption b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; }
+.piece figcaption span { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; color: var(--muted); }
+.gallery .wide { grid-column: span 2; }
+.gallery .wide .frame { aspect-ratio: 8 / 5; }
+@media (max-width: 960px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .gallery { grid-template-columns: 1fr; } .gallery .wide { grid-column: auto; } .gallery .wide .frame { aspect-ratio: 4 / 5; } }
+
+/* Materialien */
+.materials .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; }
+.materials h2 { font-size: var(--step-3); margin-bottom: 1.25rem; }
+.materials .intro p { color: var(--muted); max-width: 52ch; }
+.table-wrap { overflow-x: auto; min-width: 0; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 1rem .75rem; border-bottom: 1px solid var(--line); vertical-align: baseline; }
+th { font-family: var(--mono); font-weight: 400; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+td.stamp { font-family: var(--mono); color: var(--gold); white-space: nowrap; }
+td small { display: block; color: var(--muted); font-size: .85rem; }
+@media (max-width: 860px) { .materials .wrap { grid-template-columns: 1fr; } }
+
+/* Ringgröße */
+.sizer { margin-top: 2.5rem; padding: 1.75rem; border: 1px solid var(--line); background: var(--surface); display: grid; gap: 1rem; }
+.sizer h3 { font-size: var(--step-1); }
+.sizer label { font-size: .9rem; color: var(--muted); }
+.sizer input[type="range"] { width: 100%; accent-color: var(--gold); }
+.sizer-out { display: flex; flex-wrap: wrap; gap: 2rem; font-variant-numeric: tabular-nums; }
+.sizer-out div { display: grid; }
+.sizer-out strong { font-family: var(--display); font-weight: 400; font-size: var(--step-2); }
+.sizer-out span { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
+
+/* Stimme */
+.quote { text-align: left; }
+.quote blockquote { margin: 0; max-width: 52rem; }
+.quote blockquote p { font-family: var(--display); font-style: italic; font-size: clamp(1.6rem, 3.4vw, 2.6rem); line-height: 1.3; }
+.quote cite { display: block; margin-top: 1.5rem; font-style: normal; font-family: var(--mono); font-size: .78rem; letter-spacing: .12em; color: var(--gold); text-transform: uppercase; }
+
+/* Kontakt */
+.contact { border-top: 1px solid var(--line); }
+.contact .wrap { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(2rem, 6vw, 6rem); }
+.contact h2 { font-size: var(--step-3); margin-bottom: 1.25rem; }
+.contact-info { display: grid; gap: 1.75rem; align-content: start; min-width: 0; }
+.contact-info p { color: var(--muted); }
+.contact-info dl { display: grid; grid-template-columns: auto 1fr; gap: .6rem 1.5rem; margin: 0; }
+.contact-info dt { font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding-top: .25rem; }
+.contact-info dd { margin: 0; user-select: all; }
+form { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; min-width: 0; }
+.field { display: grid; gap: .4rem; min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+.field label { font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.field input, .field select, .field textarea {
+  font: 300 1rem/1.5 var(--body); color: var(--fg); background: transparent;
+  border: 0; border-bottom: 1px solid var(--line); padding: .6rem 0; border-radius: 0; width: 100%;
+}
+.field select option { background: var(--surface); color: var(--fg); }
+.field textarea { resize: vertical; min-height: 7rem; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-bottom-color: var(--gold); }
+.form-note { grid-column: 1 / -1; color: var(--gold); min-height: 1.5em; }
+@media (max-width: 860px) { .contact .wrap { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { form { grid-template-columns: 1fr; } }
+
+footer { border-top: 1px solid var(--line); padding-block: 2.5rem; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; font-size: .85rem; color: var(--muted); }
+footer .stamp { font-family: var(--mono); letter-spacing: .12em; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- Wiederverwendbare Metall-Verläufe -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" style="stop-color:var(--metal-hi)"/>
+      <stop offset=".35" style="stop-color:var(--gold)"/>
+      <stop offset=".6" style="stop-color:var(--metal-lo)"/>
+      <stop offset=".85" style="stop-color:var(--gold)"/>
+      <stop offset="1" style="stop-color:var(--metal-hi)"/>
+    </linearGradient>
+    <linearGradient id="rose" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4cdb6"/>
+      <stop offset=".4" stop-color="#c98a6c"/>
+      <stop offset=".7" stop-color="#7e4a35"/>
+      <stop offset="1" stop-color="#e7b49a"/>
+    </linearGradient>
+    <linearGradient id="plat" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f4f1"/>
+      <stop offset=".4" stop-color="#b9bbb6"/>
+      <stop offset=".7" stop-color="#6d706b"/>
+      <stop offset="1" stop-color="#e3e4df"/>
+    </linearGradient>
+    <radialGradient id="gem" cx=".4" cy=".35" r=".7">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".35" stop-color="#d9ecf2"/>
+      <stop offset=".8" stop-color="#7b98a3"/>
+      <stop offset="1" stop-color="#3c4f57"/>
+    </radialGradient>
+    <radialGradient id="emerald" cx=".4" cy=".35" r=".7">
+      <stop offset="0" stop-color="#b9f0d2"/>
+      <stop offset=".5" stop-color="#1f8a5b"/>
+      <stop offset="1" stop-color="#0b3a26"/>
+    </radialGradient>
+    <radialGradient id="ruby" cx=".4" cy=".35" r=".7">
+      <stop offset="0" stop-color="#ffc2c8"/>
+      <stop offset=".5" stop-color="#b3182f"/>
+      <stop offset="1" stop-color="#4a0712"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<nav class="nav" aria-label="Hauptnavigation">
+  <div class="wrap">
+    <a class="brand" href="#top"><b>ARENDT</b><span>Goldschmiede</span></a>
+    <ul>
+      <li><a href="#atelier">Atelier</a></li>
+      <li><a href="#kollektionen">Kollektionen</a></li>
+      <li><a href="#werkstatt">Werkstatt</a></li>
+      <li><a href="#arbeiten">Arbeiten</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+    </ul>
+    <a class="btn" href="#kontakt">Termin</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-copy">
+      <p class="eyebrow">Goldschmiedemeister · seit 2004</p>
+      <h1>Schmuck, der von <em>Hand</em> geschmiedet wird.</h1>
+      <p class="lead">Ringe, Trauringe und Schmuckketten aus Gold, Platin und Silber. Jedes Stück entsteht in meiner Werkstatt, vom ersten Entwurf bis zur letzten Politur.</p>
+      <div class="hero-actions">
+        <a class="btn solid" href="#arbeiten">Arbeiten ansehen</a>
+        <a class="btn" href="#kontakt">Beratung vereinbaren</a>
+      </div>
+    </div>
+    <div class="hero-figure">
+      <svg viewBox="0 0 500 500" role="img" aria-label="Solitärring aus Gelbgold mit Brillant">
+        <g class="spin" opacity=".35">
+          <circle cx="250" cy="250" r="232" fill="none" style="stroke:var(--line)" stroke-width="1"/>
+          <circle cx="250" cy="250" r="232" fill="none" style="stroke:var(--gold)" stroke-width="1" stroke-dasharray="2 14"/>
+        </g>
+        <ellipse cx="250" cy="300" rx="150" ry="150" fill="none" stroke="url(#gold)" stroke-width="26"/>
+        <ellipse cx="250" cy="300" rx="150" ry="150" fill="none" style="stroke:var(--metal-hi)" stroke-width="2" opacity=".5" transform="translate(-4 -4)"/>
+        <!-- Krappenfassung -->
+        <path d="M222 170 L250 128 L278 170 Z" fill="url(#gold)"/>
+        <rect x="226" y="150" width="6" height="34" fill="url(#gold)" transform="rotate(-14 229 167)"/>
+        <rect x="268" y="150" width="6" height="34" fill="url(#gold)" transform="rotate(14 271 167)"/>
+        <!-- Brillant -->
+        <polygon points="250,80 296,112 284,150 216,150 204,112" fill="url(#gem)"/>
+        <polygon points="250,80 270,112 250,150 230,112" fill="#ffffff" opacity=".35"/>
+        <line x1="204" y1="112" x2="296" y2="112" stroke="#ffffff" stroke-opacity=".5"/>
+        <g class="glint">
+          <path d="M300 78 l4 -16 l4 16 l16 4 l-16 4 l-4 16 l-4 -16 l-16 -4 z" fill="#ffffff"/>
+        </g>
+      </svg>
+      <span class="hallmark">750 · AR · ✦</span>
+    </div>
+  </div>
+</header>
+
+<div class="facts">
+  <div class="wrap">
+    <div class="fact"><strong>22</strong><span>Jahre am Werkbrett</span></div>
+    <div class="fact"><strong>1.400+</strong><span>Unikate gefertigt</span></div>
+    <div class="fact"><strong>100 %</strong><span>Recyclinggold</span></div>
+    <div class="fact"><strong>6–8</strong><span>Wochen Fertigung</span></div>
+  </div>
+</div>
+
+<section class="about" id="atelier">
+  <div class="wrap">
+    <figure class="portrait" style="margin:0">
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        <!-- Werkzeuge: Ringriegel und Hammer -->
+        <path d="M60 30 L80 170 L120 170 L140 30 Z" fill="none" style="stroke:var(--gold)" stroke-width="1.2" opacity=".7"/>
+        <g style="stroke:var(--gold)" stroke-width="1" opacity=".5">
+          <line x1="64" y1="55" x2="136" y2="55"/><line x1="67" y1="80" x2="133" y2="80"/>
+          <line x1="71" y1="105" x2="129" y2="105"/><line x1="74" y1="130" x2="126" y2="130"/>
+        </g>
+        <ellipse cx="100" cy="92" rx="31" ry="9" fill="none" stroke="url(#gold)" stroke-width="5"/>
+        <rect x="140" y="120" width="44" height="14" rx="2" fill="none" style="stroke:var(--gold)" stroke-width="1.2" transform="rotate(-30 162 127)"/>
+        <line x1="150" y1="140" x2="128" y2="186" style="stroke:var(--gold)" stroke-width="1.2"/>
+      </svg>
+      <figcaption>Werkstatt · Ringriegel, Größe 48–70</figcaption>
+    </figure>
+    <div class="about-text">
+      <p class="eyebrow">Das Atelier</p>
+      <h2>Ich bin Konstantin Arendt, Goldschmied aus Leidenschaft.</h2>
+      <p class="first">Meine Lehre habe ich in Pforzheim gemacht, den Meistertitel 2004 erworben. Seitdem arbeite ich in meiner eigenen Werkstatt, ohne Massenfertigung und ohne Kompromisse.</p>
+      <p>Ich schmiede, säge, löte und fasse jedes Stück selbst. Viele Kunden kommen mit einer Idee, einem Erbstück oder einem Stein aus der Familie. Daraus entsteht gemeinsam ein Schmuckstück, das genau zu ihnen passt.</p>
+      <p>Ich verarbeite ausschließlich zertifiziertes Recyclinggold und Edelsteine aus nachvollziehbarer Herkunft. Jedes Stück trägt meine Meisterpunze und den Feingehalt.</p>
+      <p class="signature">K. Arendt</p>
+    </div>
+  </div>
+</section>
+
+<section id="kollektionen" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Kollektionen</p>
+        <h2>Drei Handwerke, eine Handschrift.</h2>
+      </div>
+      <p>Ob Verlobungsring, Trauringpaar oder eine Kette für jeden Tag: Alle Entwürfe lassen sich in Metall, Breite und Steinbesatz anpassen.</p>
+    </div>
+    <div class="collections">
+      <article class="collection">
+        <div class="art">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <ellipse cx="100" cy="118" rx="62" ry="62" fill="none" stroke="url(#gold)" stroke-width="10"/>
+            <polygon points="100,30 122,46 116,64 84,64 78,46" fill="url(#gem)"/>
+            <path d="M88 64 L100 74 L112 64" fill="none" stroke="url(#gold)" stroke-width="4"/>
+          </svg>
+        </div>
+        <p class="meta">ab 1.850 €</p>
+        <h3>Verlobungsringe</h3>
+        <p>Solitäre, Halo- und Dreisteinringe. Brillanten, Saphire oder Ihr eigener Stein, gefasst in Krappen oder Zarge.</p>
+      </article>
+      <article class="collection">
+        <div class="art">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <ellipse cx="80" cy="105" rx="52" ry="52" fill="none" stroke="url(#gold)" stroke-width="14"/>
+            <ellipse cx="122" cy="105" rx="50" ry="50" fill="none" stroke="url(#plat)" stroke-width="10"/>
+            <circle cx="122" cy="56" r="4" fill="url(#gem)"/>
+          </svg>
+        </div>
+        <p class="meta">Paar ab 2.400 €</p>
+        <h3>Trauringe</h3>
+        <p>Geschmiedet statt gegossen, dadurch dichter und langlebiger. Auf Wunsch fertigen Sie Ihre Ringe mit mir zusammen an einem Werkstatttag.</p>
+      </article>
+      <article class="collection">
+        <div class="art">
+          <svg viewBox="0 0 200 200" aria-hidden="true" class="chain-art" data-r="70" data-links="22" data-metal="gold"></svg>
+        </div>
+        <p class="meta">ab 690 €</p>
+        <h3>Schmuckketten</h3>
+        <p>Anker, Panzer, Erbs und Königskette, Glied für Glied von Hand gebogen und verlötet. Mit Anhänger oder pur.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="process" id="werkstatt">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">In der Werkstatt</p>
+        <h2>Vom Gespräch zum fertigen Stück.</h2>
+      </div>
+      <p>So entsteht ein Auftragsstück. Sie sehen Entwürfe und Zwischenstände und können jederzeit vorbeikommen.</p>
+    </div>
+    <ol class="steps">
+      <li><span class="dur">ca. 1 Stunde</span><h3>Beratung</h3><p>Wir sprechen über Ihre Idee, messen die Ringgröße und wählen Metall und Steine.</p></li>
+      <li><span class="dur">1–2 Wochen</span><h3>Entwurf</h3><p>Handzeichnung und bei Bedarf ein Wachsmodell, damit Sie Form und Proportion sehen.</p></li>
+      <li><span class="dur">2–3 Wochen</span><h3>Schmieden</h3><p>Ich schmelze das Gold, walze, schmiede und löte die Grundform am Werkbrett.</p></li>
+      <li><span class="dur">1–2 Wochen</span><h3>Fassen &amp; Polieren</h3><p>Steine werden unter dem Mikroskop gefasst, danach folgen Schliff und Hochglanz.</p></li>
+      <li><span class="dur">Termin nach Wahl</span><h3>Übergabe</h3><p>Mit Zertifikat, Pflegehinweisen und kostenloser Reinigung ein Leben lang.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="arbeiten">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Ausgewählte Arbeiten</p>
+        <h2>Aus der Werkstatt.</h2>
+      </div>
+      <p>Eine Auswahl von Stücken der letzten Jahre. Jedes davon gibt es nur einmal.</p>
+    </div>
+    <div class="filters" role="group" aria-label="Arbeiten filtern">
+      <button type="button" data-filter="alle" aria-pressed="true">Alle</button>
+      <button type="button" data-filter="ring" aria-pressed="false">Ringe</button>
+      <button type="button" data-filter="kette" aria-pressed="false">Ketten</button>
+    </div>
+    <div class="gallery" id="gallery"></div>
+  </div>
+</section>
+
+<section class="materials process" id="materialien">
+  <div class="wrap">
+    <div class="intro">
+      <p class="eyebrow">Materialien</p>
+      <h2>Was die Punze verrät.</h2>
+      <p>Die Zahl im Inneren eines Rings nennt den Feingehalt: wie viele Tausendstel reines Edelmetall die Legierung enthält. Ich berate Sie gern, welches Metall zu Ihrem Alltag passt.</p>
+      <div class="sizer">
+        <h3>Ringgröße bestimmen</h3>
+        <label for="umfang">Innenumfang Ihres Fingers in Millimetern</label>
+        <input type="range" id="umfang" min="44" max="72" step="0.5" value="54">
+        <div class="sizer-out" aria-live="polite">
+          <div><strong id="out-size">54</strong><span>Ringgröße (DE)</span></div>
+          <div><strong id="out-dia">17,2</strong><span>Durchmesser mm</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Punze</th><th>Metall</th><th>Eigenschaft</th></tr></thead>
+        <tbody>
+          <tr><td class="stamp">950 Pt</td><td>Platin</td><td>Sehr dicht, hypoallergen <small>Ideal für Trauringe</small></td></tr>
+          <tr><td class="stamp">750</td><td>Gelb-, Rosé-, Weißgold</td><td>18 Karat, satte Farbe <small>Klassiker für Verlobungsringe</small></td></tr>
+          <tr><td class="stamp">585</td><td>Gelb-, Rosé-, Weißgold</td><td>14 Karat, besonders hart <small>Für Ketten im Alltag</small></td></tr>
+          <tr><td class="stamp">925</td><td>Sterlingsilber</td><td>Hell, leicht zu formen <small>Ketten und Anhänger</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="wrap">
+    <blockquote>
+      <p>„Konstantin hat aus dem Ring meiner Großmutter zwei Trauringe für uns geschmiedet. Den alten Saphir trage ich jetzt jeden Tag.“</p>
+      <cite>Lena &amp; Jonas M. · Trauringe 750 Gelbgold</cite>
+    </blockquote>
+  </div>
+</section>
+
+<section class="contact" id="kontakt">
+  <div class="wrap">
+    <div class="contact-info">
+      <div>
+        <p class="eyebrow">Kontakt</p>
+        <h2>Besuchen Sie mich in der Werkstatt.</h2>
+        <p>Beratungen nach Vereinbarung, damit ich mir für Sie Zeit nehmen kann.</p>
+      </div>
+      <dl>
+        <dt>Adresse</dt><dd>Goldschmiedgasse 7, 75175 Pforzheim</dd>
+        <dt>Telefon</dt><dd>+49 7231 000 000</dd>
+        <dt>E-Mail</dt><dd>atelier@arendt-goldschmiede.de</dd>
+        <dt>Zeiten</dt><dd>Di–Fr 10–18 Uhr · Sa 10–14 Uhr</dd>
+      </dl>
+    </div>
+    <form id="form" novalidate>
+      <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" required autocomplete="name"></div>
+      <div class="field"><label for="f-mail">E-Mail</label><input id="f-mail" name="email" type="email" required autocomplete="email"></div>
+      <div class="field full">
+        <label for="f-art">Anliegen</label>
+        <select id="f-art" name="art">
+          <option>Verlobungsring</option><option>Trauringe</option><option>Schmuckkette</option>
+          <option>Umarbeitung eines Erbstücks</option><option>Reparatur</option>
+        </select>
+      </div>
+      <div class="field full"><label for="f-msg">Ihre Idee</label><textarea id="f-msg" name="nachricht" placeholder="Metall, Stein, Budget, Termin …"></textarea></div>
+      <div class="field full"><button class="btn solid" type="submit">Anfrage senden</button></div>
+      <p class="form-note" id="form-note" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Atelier Arendt · Goldschmiedemeister</span>
+    <span class="stamp">AU 750 · PT 950 · AG 925</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var NS = "http://www.w3.org/2000/svg";
+  function el(name, attrs) {
+    var n = document.createElementNS(NS, name);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    return n;
+  }
+
+  // Kette: Glieder entlang eines Bogens, abwechselnd flach und hochkant
+  function chain(svg, opts) {
+    var cx = 100, cy = opts.cy || 95, r = opts.r, n = opts.links;
+    var start = opts.start != null ? opts.start : -200, end = opts.end != null ? opts.end : 20;
+    for (var i = 0; i < n; i++) {
+      var t = start + (end - start) * i / (n - 1);
+      var a = t * Math.PI / 180;
+      var x = cx + r * Math.cos(a), y = cy - r * Math.sin(a);
+      var flat = i % 2 === 0;
+      svg.appendChild(el("ellipse", {
+        cx: x.toFixed(1), cy: y.toFixed(1),
+        rx: flat ? 7 : 6, ry: flat ? 4.2 : 1.8,
+        fill: "none", stroke: "url(#" + opts.metal + ")", "stroke-width": flat ? 2.4 : 2.8,
+        transform: "rotate(" + (-(t + 90)).toFixed(1) + " " + x.toFixed(1) + " " + y.toFixed(1) + ")"
+      }));
+    }
+    if (opts.pendant) {
+      var py = cy + r + 22;
+      svg.appendChild(el("line", { x1: cx, y1: cy + r + 2, x2: cx, y2: py - 12, stroke: "url(#" + opts.metal + ")", "stroke-width": 2 }));
+      svg.appendChild(el("circle", { cx: cx, cy: py, r: 12, fill: "url(#" + opts.pendant + ")", stroke: "url(#" + opts.metal + ")", "stroke-width": 3 }));
+    }
+  }
+
+  function ring(svg, o) {
+    svg.appendChild(el("ellipse", { cx: 100, cy: 115, rx: 58, ry: 58, fill: "none", stroke: "url(#" + o.metal + ")", "stroke-width": o.w || 10 }));
+    if (o.stone) {
+      svg.appendChild(el("circle", { cx: 100, cy: 52, r: o.size || 14, fill: "url(#" + o.metal + ")" }));
+      svg.appendChild(el("circle", { cx: 100, cy: 52, r: (o.size || 14) - 4, fill: "url(#" + o.stone + ")" }));
+    }
+    if (o.pave) {
+      for (var i = -3; i <= 3; i++) {
+        var a = (-90 + i * 13) * Math.PI / 180;
+        svg.appendChild(el("circle", { cx: (100 + 58 * Math.cos(a)).toFixed(1), cy: (115 + 58 * Math.sin(a)).toFixed(1), r: 3.2, fill: "url(#gem)" }));
+      }
+    }
+    if (o.signet) {
+      svg.appendChild(el("rect", { x: 74, y: 38, width: 52, height: 40, rx: 8, fill: "url(#" + o.metal + ")" }));
+      svg.appendChild(el("text", { x: 100, y: 66, "text-anchor": "middle", "font-family": "Bodoni Moda, Georgia, serif", "font-size": 22, style: "fill:var(--metal-lo)" })).textContent = "A";
+    }
+  }
+
+  document.querySelectorAll(".chain-art").forEach(function (s) {
+    chain(s, { r: +s.dataset.r, links: +s.dataset.links, metal: s.dataset.metal, start: -200, end: 20, pendant: "gem" });
+  });
+
+  var works = [
+    { type: "ring", name: "Solitär „Morgentau“", info: "750 Gelbgold · Brillant 0,72 ct", draw: function (s) { ring(s, { metal: "gold", stone: "gem", size: 15 }); } },
+    { type: "kette", name: "Königskette", info: "750 Gelbgold · 45 cm · 3,2 mm", wide: true, draw: function (s) { s.setAttribute("viewBox", "0 0 200 125"); chain(s, { r: 120, cy: -40, links: 34, metal: "gold", start: -150, end: -30 }); } },
+    { type: "ring", name: "Siegelring", info: "585 Rotgold · Initiale graviert", draw: function (s) { ring(s, { metal: "rose", signet: true, w: 12 }); } },
+    { type: "ring", name: "Memoire", info: "950 Platin · 7 Brillanten", draw: function (s) { ring(s, { metal: "plat", pave: true, w: 9 }); } },
+    { type: "kette", name: "Smaragd-Anhänger", info: "750 Gelbgold · Smaragd 1,1 ct", draw: function (s) { chain(s, { r: 60, links: 20, metal: "gold", start: -200, end: 20, pendant: "emerald" }); } },
+    { type: "ring", name: "Rubin-Zarge", info: "750 Roségold · Rubin aus Mosambik", draw: function (s) { ring(s, { metal: "rose", stone: "ruby", size: 13 }); } },
+    { type: "kette", name: "Ankerkette", info: "925 Silber · 50 cm", draw: function (s) { chain(s, { r: 62, links: 24, metal: "plat", start: -210, end: 30 }); } },
+    { type: "kette", name: "Erbstück, neu gefasst", info: "585 Gelbgold · Saphir der Großmutter", wide: true, draw: function (s) { s.setAttribute("viewBox", "0 0 200 125"); chain(s, { r: 110, cy: -45, links: 28, metal: "gold", start: -145, end: -35 }); s.appendChild(el("circle", { cx: 100, cy: 87, r: 11, fill: "url(#gem)", stroke: "url(#gold)", "stroke-width": 3 })); } },
+    { type: "ring", name: "Trauring Bicolor", info: "750 Gelb- und Weißgold · 5 mm", draw: function (s) { ring(s, { metal: "gold", w: 14 }); s.appendChild(el("ellipse", { cx: 100, cy: 115, rx: 58, ry: 58, fill: "none", stroke: "url(#plat)", "stroke-width": 4 })); } },
+    { type: "ring", name: "Saphir-Halo", info: "950 Platin · Ceylon-Saphir 1,4 ct", draw: function (s) { ring(s, { metal: "plat", stone: "gem", size: 17, pave: true, w: 8 }); } }
+  ];
+
+  var gallery = document.getElementById("gallery");
+  works.forEach(function (w) {
+    var fig = document.createElement("figure");
+    fig.className = "piece" + (w.wide ? " wide" : "");
+    fig.dataset.type = w.type;
+    var frame = document.createElement("div");
+    frame.className = "frame";
+    var s = el("svg", { viewBox: "0 0 200 200", role: "img", "aria-label": w.name });
+    w.draw(s);
+    frame.appendChild(s);
+    var cap = document.createElement("figcaption");
+    cap.innerHTML = "<b></b><span></span>";
+    cap.querySelector("b").textContent = w.name;
+    cap.querySelector("span").textContent = w.info;
+    fig.appendChild(frame); fig.appendChild(cap);
+    gallery.appendChild(fig);
+  });
+
+  document.querySelectorAll(".filters button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".filters button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+      var f = b.dataset.filter;
+      gallery.querySelectorAll(".piece").forEach(function (p) { p.hidden = f !== "alle" && p.dataset.type !== f; });
+    });
+  });
+
+  // Deutsche Ringgröße = Innenumfang in mm
+  var range = document.getElementById("umfang");
+  function updateSize() {
+    var u = parseFloat(range.value);
+    document.getElementById("out-size").textContent = u.toLocaleString("de-DE");
+    document.getElementById("out-dia").textContent = (u / Math.PI).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  }
+  range.addEventListener("input", updateSize);
+  updateSize();
+
+  document.getElementById("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var f = e.target, note = document.getElementById("form-note");
+    if (!f.name.value.trim() || !f.email.checkValidity()) {
+      note.textContent = "Bitte geben Sie Ihren Namen und eine gültige E-Mail-Adresse an.";
+      return;
+    }
+    var body = "Name: " + f.name.value + "\nE-Mail: " + f.email.value + "\nAnliegen: " + f.art.value + "\n\n" + f.nachricht.value;
+    window.location.href = "mailto:atelier@arendt-goldschmiede.de?subject=" + encodeURIComponent("Anfrage: " + f.art.value) + "&body=" + encodeURIComponent(body);
+    note.textContent = "Ihr E-Mail-Programm öffnet sich mit der Anfrage. Falls nicht, schreiben Sie bitte an atelier@arendt-goldschmiede.de.";
+  });
+})();
+</script>
+</body>
+</html>
