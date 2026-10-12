@@ -462,7 +462,6 @@ function toolTitle(sc,t,a,b,c){
 }
 window.render=render;
 window.SFX=()=>{const S=[];const a=(type,t,g=1)=>S.push({type,t:+t.toFixed(3),g});
-  a('impact',0.0,1);
   a('pop',W('verbrennst'),.8); a('cash',W('Geld'),.9); [1.5,2.45].forEach(x=>a('flutter',x,.25)); a('pop',1.25,.7);
   a('whoosh',3.2,.5); a('pop',W('aber'),.9); a('tick',W('ändern')+.05,.7); a('whoosh',7.3,.55);
   a('pop',7.71,.9); [0,1,2,3].forEach(i=>a('pop',8.0+i*.12,.45)); a('riser',W('Hooks'),.45); a('ding',W('wirklich'),.8);
