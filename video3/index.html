@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Pendel Reel</title>
+<style>
+@font-face{font-family:Pop;src:url(fonts/Poppins-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Pop;src:url(fonts/Poppins-Bold.ttf);font-weight:700}
+@font-face{font-family:Pop;src:url(fonts/Poppins-ExtraBold.ttf);font-weight:800}
+:root{--pu:#A93CCB;--ink:#1E2024}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#e8ecf0}
+body{font-family:Pop,sans-serif;color:var(--ink)}
+.abs{position:absolute}
+#bg{position:absolute;inset:0;background:radial-gradient(ellipse 75% 55% at 50% 45%,#f4f6f8 0%,#e9edf1 55%,#dbe1e7 100%)}
+.word{position:absolute;left:0;top:0;width:1080px;height:1920px}
+.word div{position:absolute;left:0;width:1080px;top:770px;text-align:center;font-weight:800;font-size:136px;line-height:.98;letter-spacing:-3px;text-transform:uppercase;text-shadow:0 16px 22px rgba(20,25,35,.2)}
+#wA div{color:var(--pu)}
+#hdr{position:absolute;left:0;width:1080px;top:548px;display:flex;justify-content:center;align-items:center;gap:14px;font-weight:700;font-size:34px}
+#tag{position:absolute;left:0;width:1080px;top:1500px;text-align:center;font-weight:600;font-size:27px;letter-spacing:1.5px}
+#tag i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink);margin:0 18px;vertical-align:middle;position:relative;top:-3px}
+#bob{position:absolute;left:0;top:0;width:250px;height:250px;margin:-14px 0 0 -125px;transform-origin:125px 14px}
+#bob .c{position:absolute;left:0;top:14px;width:250px;height:250px;border-radius:50%;background:#fff;border:7px solid #23262b;box-shadow:0 34px 40px -14px rgba(20,25,35,.45);display:flex;align-items:center;justify-content:center;overflow:hidden}
+#end{position:absolute;left:0;width:1080px;top:1135px;text-align:center;font-weight:700;font-size:84px;letter-spacing:-2px;text-shadow:0 14px 20px rgba(20,25,35,.2)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C863E6"/><stop offset="1" stop-color="#8A27B0"/></linearGradient>
+    <clipPath id="cTop"><polygon points="0,0 100,0 100,22.6 0,82.6"/></clipPath>
+    <clipPath id="cBot"><polygon points="0,84.6 100,24.6 100,100 0,100"/></clipPath>
+    <symbol id="logo" viewBox="0 0 100 100">
+      <g clip-path="url(#cTop)" transform="translate(-3.2,-1.9)"><path d="M37 25 L75 50 L37 75 Z" fill="url(#lg)" stroke="url(#lg)" stroke-width="9" stroke-linejoin="round"/></g>
+      <g clip-path="url(#cBot)" transform="translate(3.2,1.9)"><path d="M37 25 L75 50 L37 75 Z" fill="url(#lg)" stroke="url(#lg)" stroke-width="9" stroke-linejoin="round"/></g>
+      <path d="M14 78.2 L26 71" stroke="#23262b" stroke-width="4" stroke-linecap="round"/>
+      <path d="M84 33.2 L94 27.2" stroke="#23262b" stroke-width="4" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+<div id="stage" class="abs" style="inset:0;overflow:hidden">
+  <div id="bg"></div>
+  <div id="hdr"><svg width="58" height="58" style="background:#fff;border-radius:50%;border:3px solid #23262b"><use href="#logo"/></svg>Video Editor</div>
+  <div id="wB" class="word"><div id="wBt">VIDEO<br>SCHNITT</div></div>
+  <div id="wA" class="word"><div>SCHREIB<br>MIR!</div></div>
+  <div id="tag">SCHNITT<i></i>MOTION<i></i>STORYTELLING</div>
+  <svg id="rope" class="abs" style="left:0;top:0;overflow:visible" width="1080" height="1920">
+    <line id="ropeS" x1="0" y1="0" x2="0" y2="0" stroke="rgba(20,25,35,.18)" stroke-width="10" stroke-linecap="round"/>
+    <line id="ropeL" x1="0" y1="0" x2="0" y2="0" stroke="#23262b" stroke-width="9" stroke-linecap="round"/>
+    <circle id="knot" r="11" fill="#23262b"/>
+  </svg>
+  <div id="bob"><div class="c"><svg width="190" height="190"><use href="#logo"/></svg></div></div>
+  <div id="end">Schick mir eine DM</div>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const cl=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)), P=(t,a,b)=>cl((t-a)/(b-a)), L=(a,b,p)=>a+(b-a)*p;
+const io=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2, oc=t=>1-Math.pow(1-t,3);
+const PX=540, PY=-900, LEN=2250, A=0.195, HALF=1.25, T0=0.35, STOP=9.1;
+const WORDS=['VIDEO<br>SCHNITT','MOTION<br>DESIGN','COLOR<br>GRADING','SOCIAL<br>REELS'];
+function theta(t){
+  if(t<STOP) return -A*Math.cos(Math.PI*(t-T0)/HALF);
+  const u=t-STOP; return A*Math.cos(Math.PI*u/HALF)*Math.exp(-3.2*u);
+}
+function render(t){
+  const th=theta(t);
+  // retract at the end: bob rises to centre, rope fades
+  const r=io(P(t,10.45,11.35));
+  const len=L(LEN,1690,r);
+  let bx=PX+Math.sin(th)*len, by=PY+Math.cos(th)*len;
+  const ropeA=1-P(t,10.4,11.2);
+  $('#ropeL').setAttribute('x1',PX);$('#ropeL').setAttribute('y1',PY);$('#ropeL').setAttribute('x2',bx);$('#ropeL').setAttribute('y2',by);
+  $('#ropeS').setAttribute('x1',PX+18);$('#ropeS').setAttribute('y1',PY);$('#ropeS').setAttribute('x2',bx+18);$('#ropeS').setAttribute('y2',by+16);
+  $('#ropeL').style.stroke=`rgba(${L(35,150,r)|0},${L(38,155,r)|0},${L(43,162,r)|0},${ropeA})`; $('#ropeS').style.opacity=ropeA;
+  $('#knot').setAttribute('cx',bx);$('#knot').setAttribute('cy',by);$('#knot').style.opacity=ropeA;
+  const bob=$('#bob'); const lag=-(theta(t+.04)-th)*60;
+  bob.style.transform=`translate(${bx}px,${by}px) rotate(${(th*180/Math.PI)*(1-r)+lag*(1-r)}deg) scale(${L(1,1.12,r)})`;
+  // word masks along the rope line
+  const xAt=y=>PX+(bx-PX)*(y-PY)/(by-PY);
+  $('#wA').style.clipPath=`polygon(0 0, ${xAt(0)}px 0, ${xAt(1920)}px 1920px, 0 1920px)`;
+  $('#wB').style.clipPath=`polygon(${xAt(0)}px 0, 1080px 0, 1080px 1920px, ${xAt(1920)}px 1920px)`;
+  // swap the right-hand word while the pendulum rests on the right side
+  let idx=0; for(let k=0;k<4;k++){ if(t>T0+HALF*(2*k+1)) idx=k+1; } idx=Math.min(idx,3);
+  $('#wBt').innerHTML=WORDS[idx];
+  const wf=P(t,9.85,10.35); ['#wA','#wB'].forEach(s=>{$(s).style.opacity=1-wf;$(s).style.filter=wf>0?`blur(${wf*14}px)`:'';});
+  // header / tagline
+  const hf=P(t,10.3,10.8); $('#hdr').style.opacity=1-hf; $('#hdr').style.transform=`translateY(${-hf*30}px)`;
+  // intro: everything blooms in quickly
+  const ip=oc(P(t,0,.45)); $('#stage').style.opacity=1; $('#hdr').style.opacity=(1-hf)*ip; $('#tag').style.opacity=ip;
+  // end text
+  const ep=P(t,11.15,11.8), e=oc(ep);
+  const end=$('#end'); end.style.opacity=ep; end.style.transform=`translateY(${(1-e)*40}px) scale(${L(.94,1,e)})`;
+  end.style.filter=ep<1?`blur(${(1-ep)*10}px)`:''; const g=L(150,30,P(t,11.4,12.0))|0; end.style.color=`rgb(${g},${g+2},${g+6})`;
+}
+window.render=render;
+window.SFX=()=>{const S=[];for(let k=0;;k++){const c=T0+HALF/2+k*HALF; if(c>STOP+.7)break; S.push({type:'whoosh',t:+c.toFixed(3),g:k%2?.38:.5});}
+  S.push({type:'whoosh',t:10.9,g:.35}); S.push({type:'pop',t:11.3,g:.45}); S.push({type:'shimmer',t:11.3,g:.35}); return S;};
+document.fonts.ready.then(()=>{window.READY=true;render(+new URLSearchParams(location.search).get('t')||0)});
+</script>
+</body>
+</html>
