@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Skill Finder Reel</title>
+<style>
+@font-face{font-family:Out;src:url(fonts/Outfit.ttf);font-weight:100 900}
+:root{--v1:#7B6BFF;--v2:#B49CFF;--ink:#16123a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0a0724}
+body{font-family:Out,sans-serif;color:#fff}
+.abs{position:absolute}
+#stage{position:absolute;inset:0;overflow:hidden}
+#bg{position:absolute;inset:0;background:radial-gradient(ellipse 90% 55% at 50% 38%,#3a24b8 0%,#24157a 35%,#120b44 70%,#0a0724 100%)}
+.blob{position:absolute;border-radius:50%;filter:blur(90px)}
+#stars i{position:absolute;width:4px;height:4px;border-radius:50%;background:#cfd6ff}
+#floorWrap{position:absolute;left:-700px;top:1180px;width:2480px;height:1100px;perspective:900px;perspective-origin:50% 0;overflow:hidden}
+#floor{position:absolute;left:0;top:0;width:2480px;height:2400px;transform-origin:50% 0;transform:rotateX(78deg);
+  background-image:linear-gradient(rgba(160,140,255,.7) 2px,transparent 2px),linear-gradient(90deg,rgba(160,140,255,.7) 2px,transparent 2px);background-size:70px 70px;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 18%,#000 100%)}
+#horizon{position:absolute;left:0;width:1080px;top:1150px;height:90px;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(170,140,255,.55),transparent 70%);filter:blur(10px)}
+.scene{position:absolute;inset:0;display:none;transform-origin:50% 45%}
+/* glass icon */
+.gl{position:absolute;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(150deg,rgba(160,180,255,.96) 0%,rgba(98,78,245,.92) 45%,rgba(58,28,185,.96) 100%);
+  box-shadow:inset 0 12px 26px rgba(255,255,255,.55),inset 0 -26px 52px rgba(28,8,120,.7),inset 0 0 0 3px rgba(255,255,255,.28),0 34px 90px rgba(70,50,255,.55),0 0 160px rgba(130,100,255,.45)}
+.gl::before{content:"";position:absolute;left:8%;top:5%;width:70%;height:34%;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0));filter:blur(6px)}
+.gl svg{position:relative;filter:drop-shadow(0 0 14px rgba(210,225,255,.95))}
+.lb{position:absolute;left:0;width:1080px;text-align:center}
+.lb .k{font-weight:600;font-size:34px;letter-spacing:8px;color:#d4ccff}
+.lb .d{font-weight:600;font-size:34px;letter-spacing:6px;color:#d4ccff;margin-top:6px}
+.lb .b{font-weight:800;font-size:132px;line-height:1.02;letter-spacing:-2px;margin-top:4px;background:linear-gradient(180deg,#fff 30%,#c9b8ff 100%);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(160,130,255,.7))}
+.chipv{position:absolute;display:flex;align-items:center;gap:14px;padding:0 26px;height:74px;border-radius:20px;background:rgba(40,28,120,.72);border:2px solid rgba(170,150,255,.55);box-shadow:0 0 30px rgba(110,90,255,.35),inset 0 1px 0 rgba(255,255,255,.25);font-family:ui-monospace,Menlo,monospace;font-size:28px;color:#e6e1ff;white-space:nowrap}
+.chipv b{width:34px;height:34px;border-radius:9px;background:linear-gradient(150deg,#9bb0ff,#6a4bff);box-shadow:inset 0 3px 6px rgba(255,255,255,.5)}
+.mini{position:absolute;width:56px;height:56px;border-radius:14px;background:linear-gradient(150deg,rgba(150,170,255,.85),rgba(80,55,220,.85));box-shadow:inset 0 4px 8px rgba(255,255,255,.45),0 0 18px rgba(110,90,255,.5)}
+/* white flow section */
+#white{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,#ffffff,#f1effa 70%,#e6e3f4);display:none}
+.wc{position:absolute;width:760px;border-radius:34px;background:#fff;box-shadow:0 40px 80px -30px rgba(40,30,110,.35),0 0 0 2px rgba(110,90,255,.08);padding:34px 40px;color:var(--ink)}
+.wc .s{font-weight:700;font-size:24px;letter-spacing:4px;color:#6a4bff}
+.wc .t{font-weight:700;font-size:58px;letter-spacing:-1px;margin-top:6px}
+.wc .tag{position:absolute;right:34px;top:30px;display:flex;align-items:center;gap:10px;font-size:22px;color:#8a86a8}
+.wc .tag i{width:44px;height:44px;border-radius:12px;background:linear-gradient(150deg,#3b2aa8,#16123a);display:inline-block}
+.row{display:flex;align-items:center;gap:16px;margin-top:16px;font-family:ui-monospace,Menlo,monospace;font-size:26px;color:#3a3560}
+.row .sc{margin-left:auto;font-family:Out;font-weight:700;color:#6a4bff}
+.bar{height:16px;border-radius:10px;background:#ece9fb;overflow:hidden;margin-top:22px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8a7bff,#5a3bff);border-radius:10px}
+#flash{position:absolute;inset:0;background:#fff;z-index:40;display:none}
+#cursor{position:absolute;width:70px;height:70px;left:0;top:0;z-index:50;filter:drop-shadow(0 0 12px rgba(160,140,255,.8))}
+.tab{padding:0 30px;height:76px;border-radius:40px;display:flex;align-items:center;font-weight:700;font-size:32px;letter-spacing:2px;border:2px solid rgba(170,150,255,.5);color:#cfc6ff;background:rgba(40,28,120,.5)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bg"></div>
+  <div class="blob" id="b1" style="left:-200px;top:200px;width:700px;height:700px;background:#5a3bff;opacity:.45"></div>
+  <div class="blob" id="b2" style="left:600px;top:700px;width:600px;height:600px;background:#b04bff;opacity:.3"></div>
+  <div class="blob" id="b3" style="left:200px;top:1300px;width:800px;height:400px;background:#3fa0ff;opacity:.18"></div>
+  <div id="stars"></div>
+  <div id="horizon"></div>
+  <div id="floorWrap"><div id="floor"></div></div>
+  <div id="cam" class="abs" style="inset:0;transform-origin:50% 45%">
+
+  <!-- 1 hook -->
+  <div class="scene" id="s1">
+    <div id="s1burst" class="abs" style="left:140px;top:300px;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,#fff 0%,rgba(220,210,255,.85) 18%,rgba(140,110,255,.4) 42%,rgba(90,60,255,0) 70%)"></div>
+    <div class="gl" id="i1" style="left:330px;top:430px;width:420px;height:420px;border-radius:100px"><svg width="260" height="260" viewBox="0 0 100 100"><path d="M24 30 L46 50 L24 70" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M54 72 H78" stroke="#fff" stroke-width="10" stroke-linecap="round"/></svg></div>
+    <div class="lb" style="top:1000px"><div class="k" id="l1k">VERCEL</div><div class="d" id="l1d">DER</div><div class="b" id="l1b" style="font-size:118px">MÄCHTIGSTE<br>SKILL</div></div>
+  </div>
+
+  <!-- 2 kaum jemand -->
+  <div class="scene" id="s2">
+    <div class="gl" id="i2" style="left:350px;top:420px;width:380px;height:380px;border-radius:92px"><svg width="250" height="250" viewBox="0 0 100 100"><path d="M10 50 C 28 24, 72 24, 90 50 C 72 76, 28 76, 10 50 Z" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round"/><circle cx="50" cy="50" r="13" fill="#fff"/><path id="i2slash" d="M18 84 L82 16" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div>
+    <div class="lb" style="top:960px"><div class="k" id="l2k">UND TROTZDEM KENNT IHN</div><div class="b" id="l2b">KAUM<br>JEMAND.</div></div>
+  </div>
+
+  <!-- 3 problem -->
+  <div class="scene" id="s3">
+    <div class="lb" style="top:230px"><div class="k" id="l3k">DAS PROBLEM</div></div>
+    <div id="cloud" class="abs" style="left:0;top:330px;width:1080px;height:800px"></div>
+    <div class="lb" style="top:1000px" id="l3c"><div class="b" id="cnt" style="font-size:150px">0</div><div class="k" style="margin-top:4px">SKILLS</div></div>
+    <div class="gl" id="i3" style="left:365px;top:430px;width:350px;height:350px;border-radius:86px"><svg width="220" height="220" viewBox="0 0 100 100"><text x="50" y="76" text-anchor="middle" font-family="Out" font-weight="800" font-size="80" fill="#fff">?</text></svg></div>
+    <div class="lb" style="top:1240px" id="l3q"><div class="k">WELCHEN BRAUCHST DU</div><div class="b" style="font-size:110px">WIRKLICH?</div></div>
+  </div>
+
+  <!-- 4 search engine -->
+  <div class="scene" id="s4">
+    <div id="orbWrap" class="abs" style="left:190px;top:330px;width:700px;height:700px">
+      <div id="orb" class="abs" style="left:170px;top:170px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d8e4ff 0%,#7aa0ff 22%,#4b3bdc 55%,#22106e 100%);box-shadow:0 0 120px rgba(110,140,255,.8),inset -30px -40px 80px rgba(20,0,80,.7)"></div>
+      <svg id="orbLines" class="abs" style="left:170px;top:170px" width="360" height="360" viewBox="0 0 100 100"><g fill="none" stroke="rgba(220,230,255,.45)" stroke-width=".8"><ellipse cx="50" cy="50" rx="49" ry="16"/><ellipse cx="50" cy="50" rx="49" ry="34"/><ellipse id="mer1" cx="50" cy="50" rx="18" ry="49"/><ellipse id="mer2" cx="50" cy="50" rx="36" ry="49"/></g></svg>
+      <svg class="abs" style="left:0;top:0" width="700" height="700"><ellipse cx="350" cy="350" rx="340" ry="110" fill="none" stroke="rgba(170,150,255,.55)" stroke-width="3"/><ellipse cx="350" cy="350" rx="300" ry="190" fill="none" stroke="rgba(170,150,255,.3)" stroke-width="2" transform="rotate(-18 350 350)"/></svg>
+      <div id="orbit"></div>
+    </div>
+    <div class="lb" style="top:1050px"><div class="k" id="l4k">DER SKILL</div><div class="d" id="l4d">DIE</div><div class="b" id="l4b" style="font-size:118px">SUCHMASCHINE</div><div class="k" id="l4s" style="margin-top:14px;color:#e6e0ff;text-shadow:0 0 18px rgba(120,90,255,.9)">FÜR ALLE SKILLS DER WELT</div></div>
+  </div>
+
+  <!-- 5 type -->
+  <div class="scene" id="s5">
+    <div class="lb" style="top:420px"><div class="k" id="l5k">DU SCHREIBST NUR</div><div class="b" id="l5b">EINMAL REIN.</div></div>
+    <div id="inBar" class="abs" style="left:70px;top:820px;width:940px;height:260px;border-radius:44px;background:linear-gradient(160deg,rgba(70,55,190,.75),rgba(30,20,100,.8));border:2px solid rgba(180,160,255,.6);box-shadow:0 0 80px rgba(110,90,255,.55),inset 0 2px 0 rgba(255,255,255,.3);padding:34px 40px">
+      <div style="display:flex;align-items:center;gap:14px;font-size:26px;color:#b9b0f0;font-weight:600;letter-spacing:2px"><span style="width:40px;height:40px;border-radius:12px;background:linear-gradient(150deg,#9bb0ff,#6a4bff);display:inline-block"></span>SKILL FINDER</div>
+      <div style="margin-top:22px;font-size:46px;font-weight:500;line-height:1.25"><span id="typed"></span><span id="caret" style="display:inline-block;width:4px;height:52px;background:#c9b8ff;vertical-align:middle;margin-left:4px"></span></div>
+      <div id="sendB" class="abs" style="right:30px;bottom:28px;width:78px;height:78px;border-radius:50%;background:linear-gradient(150deg,#a28bff,#6a4bff);box-shadow:0 0 30px rgba(140,110,255,.8);display:flex;align-items:center;justify-content:center"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div class="chipv" id="s5ex" style="left:300px;top:1160px;height:66px;font-family:Out;font-weight:700;letter-spacing:4px;font-size:26px">ZUM BEISPIEL</div>
+  </div>
+
+  <!-- 7 adapts -->
+  <div class="scene" id="s7">
+    <div class="lb" style="top:250px"><div class="k" id="l7k">UND DAS BESTE</div></div>
+    <div id="tabs" class="abs" style="left:0;width:1080px;top:340px;display:flex;justify-content:center;gap:18px"><div class="tab">CONTENT</div><div class="tab">RECHNUNGEN</div><div class="tab">WHATSAPP</div></div>
+    <div id="listCard" class="abs" style="left:110px;top:480px;width:860px;height:560px;border-radius:44px;background:linear-gradient(160deg,rgba(70,55,190,.6),rgba(30,20,100,.75));border:2px solid rgba(180,160,255,.5);box-shadow:0 0 80px rgba(110,90,255,.45);padding:40px">
+      <div id="lists"></div>
+    </div>
+    <div class="lb" style="top:1110px" id="l7a"><div class="k">ER PASST SICH</div><div class="b" style="font-size:118px">AN DICH AN.</div></div>
+  </div>
+
+  <!-- 8 installs -->
+  <div class="scene" id="s8">
+    <svg class="abs" style="left:90px;top:560px" width="900" height="420"><defs><linearGradient id="cg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="rgba(150,120,255,.55)"/><stop offset="1" stop-color="rgba(150,120,255,0)"/></linearGradient></defs>
+      <path id="chartA" d="M0 400 C 150 390, 260 370, 380 330 S 600 220, 700 140 S 840 30, 900 10 L900 420 L0 420Z" fill="url(#cg)"/>
+      <path id="chartL" d="M0 400 C 150 390, 260 370, 380 330 S 600 220, 700 140 S 840 30, 900 10" fill="none" stroke="#c9b8ff" stroke-width="8" stroke-linecap="round" style="filter:drop-shadow(0 0 14px #9b83ff)"/>
+      <circle id="chartD" r="16" fill="#fff" style="filter:drop-shadow(0 0 16px #b49cff)"/></svg>
+    <div class="lb" style="top:300px"><div class="k" id="l8k">ÜBER</div><div class="b" id="inst" style="font-size:150px">0</div><div class="k" id="l8s">INSTALLATIONEN</div></div>
+    <div class="gl" id="i8" style="left:400px;top:1060px;width:280px;height:280px;border-radius:68px"><svg width="190" height="190" viewBox="0 0 100 100"><rect x="12" y="20" width="76" height="50" rx="8" fill="none" stroke="#fff" stroke-width="7"/><path d="M38 84 H62 M50 70 V84" stroke="#fff" stroke-width="7" stroke-linecap="round"/><path d="M30 34 L70 58 M70 34 L30 58" stroke="#fff" stroke-width="6" stroke-linecap="round" id="i8x"/></svg></div>
+    <div class="lb" style="top:1390px" id="l8n"><div class="k">NOCH NICHT AUF DEM</div><div class="b" style="font-size:118px">SCHIRM.</div></div>
+  </div>
+
+  <!-- 9 CTA -->
+  <div class="scene" id="s9">
+    <div class="gl" id="i9a" style="left:150px;top:420px;width:260px;height:260px;border-radius:64px"><svg width="170" height="170" viewBox="0 0 100 100"><path d="M42 58 L58 42" stroke="#fff" stroke-width="8" stroke-linecap="round"/><path d="M46 30 l8-8 a14 14 0 0 1 20 20 l-8 8 M54 70 l-8 8 a14 14 0 0 1 -20 -20 l8 -8" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/></svg></div>
+    <div class="abs" id="ex3" style="left:470px;top:440px;width:480px;height:230px"></div>
+    <div class="lb" style="top:740px" id="l9a"><div class="k">DER KOMPLETTE LINK</div><div class="d">+ 3 BEISPIELE</div></div>
+    <div id="cta" class="lb" style="top:900px"><div style="font-weight:700;font-size:96px;letter-spacing:-1px">Kommentier</div><div class="b" style="font-size:190px;margin-top:-10px">FINDER.</div></div>
+    <div id="cmt" class="abs" style="left:110px;top:1300px;width:860px;height:130px;border-radius:65px;background:linear-gradient(160deg,rgba(70,55,190,.7),rgba(30,20,100,.85));border:2px solid rgba(180,160,255,.6);box-shadow:0 0 60px rgba(110,90,255,.5);display:flex;align-items:center;padding:0 22px 0 40px;gap:20px">
+      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(150deg,#9bb0ff,#5a3bff)"></div>
+      <div style="font-size:44px;font-weight:600;flex:1"><span id="cmtT" style="color:#a99fe6">Kommentieren…</span></div>
+      <div style="width:86px;height:86px;border-radius:50%;background:linear-gradient(150deg,#a28bff,#6a4bff);display:flex;align-items:center;justify-content:center"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div id="fol" class="abs" style="left:340px;top:1480px;width:400px;height:110px;border-radius:55px;background:linear-gradient(150deg,#a28bff,#6a4bff);box-shadow:0 0 50px rgba(140,110,255,.8),inset 0 3px 6px rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:46px">Folgen</div>
+    <div id="burst"></div>
+  </div>
+  </div>
+
+  <!-- white flow section -->
+  <div id="white">
+    <div id="world" class="abs" style="left:0;top:0;width:1080px;height:3600px">
+      <svg class="abs" style="left:0;top:0" width="1080" height="3600"><path id="flow" d="M-40 420 C 260 420, 120 760, 300 900 S 900 1100, 820 1500 S 160 1800, 260 2200 S 900 2500, 760 2900" fill="none" stroke="#6a4bff" stroke-width="7" stroke-linecap="round"/><circle id="flowDot" r="14" fill="#6a4bff" stroke="#fff" stroke-width="5"/></svg>
+      <div class="wc" id="w1" style="left:160px;top:560px"><div class="tag">Skill Finder<i></i></div><div class="s">SCHRITT 1</div><div class="t">Durchsuchen</div><div class="row" style="color:#8a86a8">komplette Datenbank<span class="sc" id="w1n">0</span></div><div class="bar"><i id="w1b"></i></div></div>
+      <div class="wc" id="w2" style="left:160px;top:1180px"><div class="tag">Skill Finder<i></i></div><div class="s">SCHRITT 2</div><div class="t">Beste Treffer</div>
+        <div class="row wr"><span class="mini" style="position:relative;width:40px;height:40px;border-radius:10px"></span>billing-automation<span class="sc">9.8</span></div>
+        <div class="row wr"><span class="mini" style="position:relative;width:40px;height:40px;border-radius:10px"></span>whatsapp-automation<span class="sc">9.6</span></div>
+        <div class="row wr"><span class="mini" style="position:relative;width:40px;height:40px;border-radius:10px"></span>invoice-organizer<span class="sc">9.4</span></div></div>
+      <div class="wc" id="w3" style="left:160px;top:1860px"><div class="tag">Skill Finder<i></i></div><div class="s">SCHRITT 3</div><div class="t">Runterladen</div><div class="row" style="color:#8a86a8">3 Skills<span class="sc" id="w3n">0 %</span></div><div class="bar"><i id="w3b"></i></div></div>
+      <div class="wc" id="w4" style="left:160px;top:2480px"><div class="tag">Skill Finder<i></i></div><div class="s">SCHRITT 4</div><div class="t">In dein Setup</div><div class="row" style="font-family:Out;font-weight:700;color:#1E9E5A;font-size:32px"><span id="w4c" style="width:46px;height:46px;border-radius:50%;background:#1E9E5A;color:#fff;display:inline-flex;align-items:center;justify-content:center">✓</span>Installiert &amp; startklar</div></div>
+    </div>
+  </div>
+
+  <div id="flash"></div>
+  <svg id="cursor" viewBox="0 0 24 24"><path d="M4 2.5l15 8.6-6.4 1.6-3.3 6.1z" fill="#fff" stroke="#3a2aa8" stroke-width="1.6" stroke-linejoin="round"/></svg>
+</div>
+<script src="words.js"></script>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const cl=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)), P=(t,a,b)=>cl((t-a)/(b-a)), L=(a,b,p)=>a+(b-a)*p;
+const E={oc:t=>1-Math.pow(1-t,3),ic:t=>t*t*t,io:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,ox:t=>t>=1?1:1-Math.pow(2,-10*t),
+  ob:t=>{const c1=1.7,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2)},
+  el:t=>t<=0?0:t>=1?1:Math.pow(2,-9*t)*Math.sin((t*10-.75)*2.094)+1};
+function T(el,o){const {x=0,y=0,s=1,r=0,o:op=1,b=0}=o; el.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`; el.style.opacity=op; el.style.filter=b>.05?`blur(${b}px)`:'';}
+const WR=window.WORDS_RAW.map(([w,t])=>({txt:w.replace(/[,.!?:„“"]/g,''),t:t-.04}));
+const W=(txt,n=0)=>WR.filter(w=>w.txt===txt)[n].t;
+// reveal: blur-in + rise (the ref's soft "glow-in")
+function rev(el,t,a,{dy=40,d=.45,s0=.92}={}){const p=P(t,a,a+d),e=E.oc(p); T(el,{y:(1-e)*dy,s:L(s0,1,e),o:p,b:(1-p)*16});}
+function glassIn(el,t,a,{r=0,float=1}={}){const p=P(t,a,a+.7),e=E.ob(p);
+  el.style.transform=`perspective(1400px) translateY(${(1-E.oc(p))*120+Math.sin(t*1.5+a)*12*float}px) rotateY(${Math.sin(t*.9+a)*14*float+(1-p)*40}deg) rotateX(${Math.sin(t*.7+a)*8*float}deg) rotate(${r}deg) scale(${Math.max(0,e)})`;
+  el.style.opacity=p>0?Math.min(1,p*3):0;}
+
+/* build */
+(function(){
+  let sd=7;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647;
+  for(let i=0;i<90;i++)$('#stars').insertAdjacentHTML('beforeend',`<i data-p="${rn()*6}" style="left:${rn()*1080}px;top:${rn()*1150}px;transform:scale(${(rn()*1.4+.4).toFixed(2)})"></i>`);
+  // skill cloud
+  const names=['grill-me','agent-browser','pdf','tdd','prototype','frontend-design','copywriting','seo-audit','lark-base','invoice','slidedeck','scraper','hook-writer','cron','analytics','mailer','crm-sync','transcribe','video-cut','i18n','deploy','tests','ocr','charts'];
+  for(let i=0;i<48;i++){const c=i%4, r=Math.floor(i/4); $('#cloud').insertAdjacentHTML('beforeend',`<div class="chipv cc" data-i="${i}" style="left:${30+c*262}px;top:${r*64}px;height:52px;font-size:20px;padding:0 14px;gap:10px;border-radius:14px;width:244px;overflow:hidden"><b style="width:24px;height:24px;border-radius:7px;flex:0 0 auto"></b>${names[(i*7)%names.length]}</div>`);}
+  // orbit chips
+  ['billing','whatsapp','content','pdf','crm','video'].forEach((n,i)=>$('#orbit').insertAdjacentHTML('beforeend',`<div class="chipv oc" style="left:0;top:0;height:60px;font-size:24px;padding:0 18px"><b style="width:28px;height:28px"></b>${n}</div>`));
+  // lists
+  const L3={CONTENT:['hook-writer','caption-generator','thumbnail-ideas','repurpose-video'],RECHNUNGEN:['invoice-organizer','billing-automation','mahn-assistent','datev-export'],WHATSAPP:['whatsapp-automation','auto-reply','lead-capture','booking-bot']};
+  Object.entries(L3).forEach(([k,v])=>$('#lists').insertAdjacentHTML('beforeend',`<div class="lst abs" style="left:40px;top:40px;right:40px"><div style="font-size:26px;letter-spacing:6px;color:#b9b0f0;font-weight:600">${k} · SKILLS</div>${v.map((n,i)=>`<div class="li" style="display:flex;align-items:center;gap:20px;margin-top:26px;font-family:ui-monospace,Menlo,monospace;font-size:34px"><span class="mini" style="position:relative;width:56px;height:56px"></span>${n}<span style="margin-left:auto;font-family:Out;font-weight:700;color:#c9b8ff">${(9.8-i*.3).toFixed(1)}</span></div>`).join('')}</div>`));
+  // CTA examples
+  for(let i=0;i<3;i++)$('#ex3').insertAdjacentHTML('beforeend',`<div class="exc abs" style="left:${i*160}px;top:${i%2?30:0}px;width:150px;height:200px;border-radius:24px;background:linear-gradient(160deg,rgba(90,75,210,.8),rgba(35,25,110,.9));border:2px solid rgba(180,160,255,.55);box-shadow:0 0 30px rgba(110,90,255,.45);padding:18px"><div style="font-size:20px;letter-spacing:3px;color:#b9b0f0;font-weight:700">BEISPIEL</div><div style="font-size:64px;font-weight:800;margin-top:8px">${i+1}</div><div style="height:10px;border-radius:6px;background:rgba(200,190,255,.4);margin-top:14px;width:90%"></div><div style="height:10px;border-radius:6px;background:rgba(200,190,255,.25);margin-top:10px;width:60%"></div></div>`);
+  for(let i=0;i<12;i++)$('#burst').insertAdjacentHTML('beforeend',`<div class="bp abs" style="width:20px;height:20px;border-radius:50%;background:${i%2?'#c9b8ff':'#fff'};box-shadow:0 0 14px #9b83ff"></div>`);
+})();
+
+const SC=[['#s1',0,4.55],['#s2',4.5,6.95],['#s3',6.9,13.95],['#s4',13.9,18.2],['#s5',18.15,24.3],['#s7',31.1,41.85],['#s8',41.8,47.75],['#s9',47.7,60]];
+const WHITE=[24.2,31.2];
+function env(el,t,a,b,first){
+  if(t<a-.01||t>b){el.style.display='none';return false}
+  el.style.display='block';
+  const pi=first?1:P(t,a,a+.45), po=P(t,b-.3,b);
+  el.style.transform=`scale(${L(.8,1,E.oc(pi))*L(1,1.5,E.ic(po))})`; el.style.opacity=Math.min(pi*1.5,1)*(1-po);
+  const bl=(1-pi)*18+po*20; el.style.filter=bl>.05?`blur(${bl}px)`:''; return true;
+}
+const cur=$('#cursor'); const cursorAt=(x,y,o=1,s=1)=>T(cur,{x,y,o,s});
+
+function render(t){
+  // background life
+  $('#floor').style.backgroundPosition=`0 ${(t*60)%70}px`;
+  $$('#stars i').forEach(s=>s.style.opacity=.25+.6*Math.abs(Math.sin(t*1.3+ +s.dataset.p)));
+  T($('#b1'),{x:Math.sin(t*.3)*60,y:Math.cos(t*.25)*40,o:1}); T($('#b2'),{x:Math.cos(t*.27)*70,y:Math.sin(t*.33)*50,o:1});
+  $('#b1').style.filter='blur(90px)'; $('#b2').style.filter='blur(90px)';
+  let k=0; SC.concat([['',WHITE[0]],['',WHITE[1]]]).forEach(([,a])=>{if(a>0){const p=P(t,a,a+.55); if(p>0&&p<1)k=Math.max(k,1-E.oc(p));}});
+  $('#cam').style.transform=`scale(${1+.02*Math.sin(t*.5)+k*.06}) translate(${Math.sin(t*.37)*8}px,${Math.cos(t*.29)*10}px)`;
+  cursorAt(-200,-200,0);
+  // white flashes
+  const fA=P(t,WHITE[0]-.25,WHITE[0])-P(t,WHITE[0],WHITE[0]+.35), fB=P(t,WHITE[1]-.2,WHITE[1])-P(t,WHITE[1],WHITE[1]+.4), fC=P(t,0,.05)*0+ (1-P(t,0,.6))*.0;
+  const fl=Math.max(fA,fB*.9); $('#flash').style.display=fl>0?'':'none'; $('#flash').style.opacity=fl;
+
+  // S1
+  if(env($('#s1'),t,0,4.55,true)){
+    const bp=P(t,0,1.1); T($('#s1burst'),{s:L(.3,1.6,E.oc(bp)),o:(1-bp)*1.1});
+    const p=P(t,.05,.95); const e=E.oc(p);
+    $('#i1').style.transform=`perspective(1400px) translateZ(${L(-1600,0,e)}px) translateY(${Math.sin(t*1.5)*12}px) rotateY(${L(-60,0,e)+Math.sin(t*.9)*12}deg) rotateX(${Math.sin(t*.7)*7}deg)`;
+    $('#i1').style.opacity=P(t,.05,.4);
+    rev($('#l1k'),t,W('Vercel')); rev($('#l1d'),t,W('den')); rev($('#l1b'),t,W('mächtigsten'),{dy:60,d:.55});
+  }
+  // S2
+  if(env($('#s2'),t,4.5,6.95)){
+    glassIn($('#i2'),t,4.6);
+    const sl=$('#i2slash'); const len=100; sl.style.strokeDasharray=len; sl.style.strokeDashoffset=len*(1-E.io(P(t,W('kaum'),W('kaum')+.4)));
+    rev($('#l2k'),t,W('kennt')-.15); rev($('#l2b'),t,W('kaum'),{dy:60,d:.55});
+  }
+  // S3
+  if(env($('#s3'),t,6.9,13.95)){
+    rev($('#l3k'),t,7.0);
+    const h=W('hunderttausende'), q=W('welchen');
+    $$('#cloud .cc').forEach((c,i)=>{const a=h-.3+((i*37)%48)/48*1.1; const p=P(t,a,a+.35); const dim=P(t,q-.2,q+.3);
+      T(c,{y:(1-E.oc(p))*30+Math.sin(t*2+i)*3,s:L(.6,1,E.ob(p)),o:p*L(1,.22,dim),b:dim*3});});
+    const cp=P(t,h,h+1.6); $('#cnt').textContent=(Math.round(E.oc(cp)*100000)).toLocaleString('de-DE')+(cp>=1?'+':'');
+    rev($('#l3c'),t,h-.1); $('#l3c').style.opacity*=1-P(t,q-.2,q+.2);
+    glassIn($('#i3'),t,q);
+    rev($('#l3q'),t,W('wirklich'),{dy:50});
+  }
+  // S4
+  if(env($('#s4'),t,13.9,18.2)){
+    const op=E.ob(P(t,14.0,14.8)); $('#orbWrap').style.transform=`scale(${Math.max(0,op)}) translateY(${Math.sin(t*1.4)*10}px)`; $('#orbWrap').style.opacity=P(t,14,14.3);
+    $('#mer1').setAttribute('rx',Math.abs(18*Math.cos(t*1.2))+2); $('#mer2').setAttribute('rx',Math.abs(36*Math.cos(t*1.2+.8))+2);
+    $$('#orbit .oc').forEach((c,i)=>{const a=t*.6+i/6*Math.PI*2; const x=350+Math.cos(a)*330-90, y=350+Math.sin(a)*105-30; const front=Math.sin(a)>0;
+      const p=P(t,14.6+i*.12,15.0+i*.12); c.style.transform=`translate(${x}px,${y}px) scale(${(front?1:.8)*E.ob(p)})`; c.style.opacity=p*(front?1:.55); c.style.zIndex=front?3:0;});
+    $('#orb').style.zIndex=2;
+    rev($('#l4k'),t,W('Dieser')); rev($('#l4d'),t,W('eine')); rev($('#l4b'),t,W('Suchmaschine'),{dy:60,d:.55}); rev($('#l4s'),t,W('alle',0));
+  }
+  // S5
+  if(env($('#s5'),t,18.15,24.3)){
+    rev($('#l5k'),t,W('schreibst')-.1); rev($('#l5b'),t,W('einmal'),{dy:60});
+    const bp=E.ob(P(t,W('woran')-.2,W('woran')+.4)); T($('#inBar'),{s:Math.max(0,bp),o:bp>0?1:0,y:Math.sin(t*1.5)*6});
+    const txt='Ich will mein kleines Business automatisieren.'; const a=W('Ich'), b=W('automatisieren')+.7;
+    const n=Math.round(cl((t-a)/(b-a))*txt.length); $('#typed').textContent=txt.slice(0,n);
+    $('#caret').style.opacity=(Math.floor(t*3)%2)?1:.2;
+    rev($('#s5ex'),t,W('Zum'),{dy:30});
+    const sp=P(t,23.95,24.1)-P(t,24.1,24.25); $('#sendB').style.transform=`scale(${1-.15*sp})`;
+    if(t>23.4&&t<24.3){const c=E.io(P(t,23.4,23.95)); cursorAt(L(1000,960,c),L(1300,1040,c),1,1-.15*sp);}
+  }
+  // WHITE flow section
+  const wv=t>=WHITE[0]&&t<WHITE[1]; $('#white').style.display=wv?'block':'none';
+  if(wv){
+    const steps=[W('durchsucht'),W('findet'),W('lädt'),W('packt')];
+    const fl=$('#flow'), len=fl.getTotalLength();
+    // line progress per step (cards sit along the path)
+    const marks=[.16,.42,.66,.9];
+    let prog=0; steps.forEach((s,i)=>{const p=E.io(P(t,s-.35,s+.15)); prog=Math.max(prog,L(i?marks[i-1]:0,marks[i],p));});
+    prog=Math.max(prog,L(marks[3],1,E.io(P(t,steps[3]+.6,31.2))));
+    fl.style.strokeDasharray=len; fl.style.strokeDashoffset=len*(1-prog);
+    const pt=fl.getPointAtLength(len*prog); $('#flowDot').setAttribute('cx',pt.x); $('#flowDot').setAttribute('cy',pt.y);
+    const camY=[560,1180,1860,2480]; let cy=camY[0]-640; steps.forEach((s,i)=>{const p=E.io(P(t,s-.45,s+.2)); if(p>0) cy=L(i?camY[i-1]-640:camY[0]-640,camY[i]-640,p);});
+    $('#world').style.transform=`translateY(${-cy}px)`;
+    ['#w1','#w2','#w3','#w4'].forEach((id,i)=>{const p=P(t,steps[i]-.15,steps[i]+.35); T($(id),{s:L(.9,1,E.ob(p)),o:p,y:(1-E.oc(p))*50,b:(1-p)*10});});
+    const p1=E.io(P(t,steps[0],steps[0]+1.6)); $('#w1b').style.width=(p1*100)+'%'; $('#w1n').textContent=Math.round(p1*700000).toLocaleString('de-DE');
+    $$('#w2 .wr').forEach((r,i)=>{const p=P(t,steps[1]+.2+i*.18,steps[1]+.45+i*.18); T(r,{o:p,x:(1-E.oc(p))*-30});});
+    const p3=E.io(P(t,steps[2]+.1,steps[2]+.9)); $('#w3b').style.width=(p3*100)+'%'; $('#w3n').textContent=Math.round(p3*100)+' %';
+    T($('#w4c'),{s:E.el(P(t,steps[3]+.35,steps[3]+.95))});
+  }
+  // S7
+  if(env($('#s7'),t,31.1,41.85)){
+    rev($('#l7k'),t,W('Beste')-.2);
+    const tabs=$$('#tabs .tab'); const tt=[W('Content'),W('Rechnungen'),W('WhatsApp-Automationen')];
+    let act=0; tt.forEach((x,i)=>{if(t>=x-.05)act=i;});
+    tabs.forEach((tb,i)=>{const p=P(t,tt[0]-.3+i*.1,tt[0]+.1+i*.1); T(tb,{s:E.ob(p),o:p>0?1:0});
+      const on=i===act; tb.style.background=on?'linear-gradient(150deg,#a28bff,#6a4bff)':'rgba(40,28,120,.5)'; tb.style.color=on?'#fff':'#cfc6ff'; tb.style.boxShadow=on?'0 0 40px rgba(140,110,255,.8)':'none';});
+    const lp=E.ob(P(t,tt[0]-.1,tt[0]+.45)); T($('#listCard'),{s:Math.max(0,lp),o:lp>0?1:0,y:Math.sin(t*1.4)*6});
+    $$('#lists .lst').forEach((l,i)=>{const sw=P(t,tt[i]-.05,tt[i]+.3), out=i<2?P(t,tt[i+1]-.05,tt[i+1]+.2):0;
+      T(l,{o:sw*(1-out),x:(1-E.oc(sw))*80-out*80,b:(1-sw)*8+out*8});
+      [...l.querySelectorAll('.li')].forEach((li,j)=>{const p=P(t,tt[i]+.05+j*.08,tt[i]+.35+j*.08); T(li,{o:p,x:(1-E.oc(p))*40});});});
+    const pa=W('passt'); rev($('#l7a'),t,pa,{dy:60,d:.55});
+    $('#listCard').style.opacity*=1;
+  }
+  // S8
+  if(env($('#s8'),t,41.8,47.75)){
+    rev($('#l8k'),t,W('über')-.1); rev($('#inst'),t,W('drei')-.1,{dy:30}); rev($('#l8s'),t,W('Installationen'));
+    const cp=E.io(P(t,W('drei')-.1,W('Installationen')+.6)); $('#inst').textContent=Math.round(cp*3000000).toLocaleString('de-DE');
+    const cl_=$('#chartL'),len=cl_.getTotalLength(); cl_.style.strokeDasharray=len; cl_.style.strokeDashoffset=len*(1-cp);
+    $('#chartA').style.opacity=cp*.9; const pt=cl_.getPointAtLength(len*cp); $('#chartD').setAttribute('cx',pt.x); $('#chartD').setAttribute('cy',pt.y); $('#chartD').style.opacity=cp>0?1:0;
+    const sc=W('Schirm'); glassIn($('#i8'),t,W('meisten')); const x=$('#i8x'); x.style.strokeDasharray=60; x.style.strokeDashoffset=60*(1-E.io(P(t,sc-.4,sc)));
+    rev($('#l8n'),t,W('nicht',0)-.05,{dy:50});
+  }
+  // S9
+  if(env($('#s9'),t,47.7,60)){
+    glassIn($('#i9a'),t,W('Link')-.2,{r:-6});
+    $$('#ex3 .exc').forEach((c,i)=>{const p=P(t,W('Beispiele')-.2+i*.15,W('Beispiele')+.3+i*.15); T(c,{s:E.ob(p),o:p>0?1:0,r:[-6,3,8][i],y:Math.sin(t*1.6+i)*8});});
+    rev($('#l9a'),t,W('kompletten'));
+    const ko=W('kommentiere'); const shift=E.io(P(t,ko-.3,ko+.2));
+    $('#i9a').style.opacity*=1-shift*.0;
+    rev($('#cta'),t,ko-.1,{dy:70,d:.55});
+    const fi=W('Finder'); const ty=Math.round(cl((t-fi+.1)/.35)*6); $('#cmtT').textContent=ty>0?'FINDER'.slice(0,ty):'Kommentieren…'; $('#cmtT').style.color=ty>0?'#fff':'#a99fe6';
+    const cb=E.ob(P(t,ko,ko+.5)); T($('#cmt'),{s:Math.max(0,cb),o:cb>0?1:0});
+    const fo=W('folg'), click=fo+.6;
+    const fp=E.ob(P(t,fo-.15,fo+.35)); const done=t>=click;
+    T($('#fol'),{s:Math.max(0,fp)*(done?L(1.2,1,E.el(P(t,click,click+.6))):1),o:fp>0?1:0});
+    $('#fol').textContent=done?'Gefolgt ✓':'Folgen'; $('#fol').style.background=done?'#fff':'linear-gradient(150deg,#a28bff,#6a4bff)'; $('#fol').style.color=done?'#3a2aa8':'#fff';
+    if(t>fo&&t<click+.6){const c=E.io(P(t,fo,click-.05)); const pr=P(t,click-.05,click)-P(t,click+.08,click+.2); cursorAt(L(900,650,c),L(1800,1560,c),1-P(t,click+.3,click+.6),1-.15*pr);}
+    $$('#burst .bp').forEach((b,i)=>{const a=i/12*Math.PI*2,p=P(t,click,click+.7),e=E.oc(p); T(b,{x:540+Math.cos(a)*260*e,y:1535+Math.sin(a)*120*e,s:p>0?L(1.3,0,p):0,o:p>0&&p<1?1:0});});
+  }
+}
+window.render=render;
+window.SFX=()=>{const S=[];const a=(type,t,g=1)=>S.push({type,t:+Math.max(0,t).toFixed(3),g});
+  a('shimmer',0.0,.5); a('whoosh',0.45,.4); a('pop',W('mächtigsten'),.35);
+  a('whoosh',4.5,.4); a('tick',W('kaum'),.4);
+  a('whoosh',6.9,.4); a('riser',W('hunderttausende')-.2,.3); a('pop',W('welchen'),.45);
+  a('whoosh',13.9,.4); a('shimmer',14.2,.35); a('pop',W('Suchmaschine'),.35);
+  a('whoosh',18.15,.4); const ta=W('Ich'),tb=W('automatisieren')+.7; for(let x=ta;x<tb;x+=.11)a('type',x,.35); a('click',24.0,.6);
+  a('shimmer',WHITE[0]-.1,.45); [W('durchsucht'),W('findet'),W('lädt'),W('packt')].forEach(x=>a('pop',x,.4)); a('ding',W('packt')+.4,.5);
+  a('shimmer',WHITE[1]-.1,.4); [W('Content'),W('Rechnungen'),W('WhatsApp-Automationen')].forEach(x=>a('tick',x,.45)); a('pop',W('passt'),.35);
+  a('whoosh',41.8,.4); a('riser',W('drei')-.2,.3); a('ding',W('Installationen')+.6,.4); a('error',W('Schirm')-.3,.3);
+  a('whoosh',47.7,.4); a('pop',W('Link'),.4); a('pop',W('Beispiele'),.35); a('pop',W('kommentiere'),.45);
+  const fi=W('Finder'); for(let i=0;i<6;i++)a('type',fi-.1+i*.06,.4); a('click',W('folg')+.6,.7); a('ding',W('folg')+.65,.55);
+  return S;};
+document.fonts.ready.then(()=>{window.READY=true;render(+new URLSearchParams(location.search).get('t')||0)});
+</script>
+</body>
+</html>
