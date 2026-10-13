@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>KI-Telefonassistent Reel</title>
+<style>
+@font-face{font-family:Pop;src:url(fonts/Poppins-Medium.ttf);font-weight:500}
+@font-face{font-family:Pop;src:url(fonts/Poppins-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Pop;src:url(fonts/Poppins-Bold.ttf);font-weight:700}
+@font-face{font-family:Pop;src:url(fonts/Poppins-ExtraBold.ttf);font-weight:800}
+@font-face{font-family:Play;src:url(fonts/PlayfairDisplay-Italic.ttf);font-style:italic;font-weight:400 900}
+:root{--or:#F7983A;--or2:#FFB060;--ink:#2A2420;--mute:#8A7563;--red:#E5484D;--green:#25B05F;--slate:#5B6675}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#e9ecef}
+body{font-family:Pop,sans-serif;color:var(--ink);font-weight:500}
+.abs{position:absolute}
+#stage{position:absolute;inset:0;overflow:hidden}
+.bgl{position:absolute;inset:0}
+#bgCool{background:linear-gradient(172deg,#f4f5f7 0%,#e3e7ec 55%,#c4ccd6 100%)}
+#bgWarm{background:linear-gradient(172deg,#f8efe6 0%,#f1dcc6 50%,#e7b88a 100%)}
+.grid{position:absolute;inset:-80px;background-image:linear-gradient(rgba(60,70,90,.07) 2px,transparent 2px),linear-gradient(90deg,rgba(60,70,90,.07) 2px,transparent 2px);background-size:78px 78px;-webkit-mask-image:radial-gradient(ellipse 70% 55% at 50% 48%,#000 30%,transparent 80%)}
+#bgWarm .grid{background-image:linear-gradient(rgba(140,90,40,.075) 2px,transparent 2px),linear-gradient(90deg,rgba(140,90,40,.075) 2px,transparent 2px)}
+.light{position:absolute;left:180px;top:-260px;width:1300px;height:1700px;filter:blur(46px);opacity:.75}
+.light i{position:absolute;width:360px;height:470px;background:rgba(255,255,255,.85);border-radius:8px}
+.shade{position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 0% 100%,rgba(60,70,90,.22),transparent 70%)}
+#bgWarm .shade{background:radial-gradient(ellipse 60% 40% at 0% 100%,rgba(150,90,40,.28),transparent 70%)}
+.scene{position:absolute;inset:0;transform-origin:50% 50%;display:none}
+.card{position:absolute;background:#fff;border-radius:38px;box-shadow:0 40px 80px -30px rgba(60,50,40,.45),0 12px 24px -10px rgba(60,50,40,.18)}
+.emo{position:absolute;filter:drop-shadow(0 24px 22px rgba(60,50,40,.32))}
+.cap{position:absolute;left:70px;width:940px;text-align:center;font-size:64px;line-height:1.22;font-weight:500;letter-spacing:-.5px}
+.cap .w{display:inline-block;margin:0 .12em}
+.cap .acc{font-family:Play;font-style:italic;font-weight:500;font-size:1.12em;letter-spacing:0}
+.cap .r{color:var(--red)} .cap .o{color:var(--or)}
+.chip{position:absolute;background:#fff;border-radius:28px;display:flex;align-items:center;gap:16px;padding:0 30px;box-shadow:0 24px 40px -18px rgba(60,50,40,.45);font-weight:600;font-size:34px;white-space:nowrap}
+.lbl{position:absolute;background:var(--ink);color:#fff;border-radius:40px;padding:8px 28px;font-weight:600;font-size:30px;white-space:nowrap}
+/* phone */
+.phone{position:absolute;width:500px;height:1020px;border-radius:82px;background:linear-gradient(145deg,#3a3a42,#16161a);padding:16px;box-shadow:0 60px 90px -30px rgba(30,30,40,.6),inset 0 0 0 3px #4a4a52}
+.phone .scr{position:relative;width:100%;height:100%;border-radius:68px;overflow:hidden}
+.phone .isl{position:absolute;left:50%;top:22px;width:150px;height:42px;margin-left:-75px;border-radius:24px;background:#000;z-index:5}
+.btn{width:130px;height:130px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.bub{position:absolute;background:#fff;border-radius:34px;padding:22px 32px;font-size:34px;font-weight:600;line-height:1.3;box-shadow:0 24px 40px -18px rgba(60,50,40,.45);max-width:560px}
+.node{position:absolute;width:230px;height:230px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 30px 50px -20px rgba(110,60,20,.45)}
+.node img{width:140px}
+.node b{position:absolute;top:240px;left:50%;transform:translateX(-50%);font-size:36px;font-weight:700;white-space:nowrap}
+svg{overflow:visible}
+#cursor{position:absolute;width:74px;height:74px;left:0;top:0;z-index:50;filter:drop-shadow(0 10px 10px rgba(0,0,0,.3))}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bgCool" class="bgl"><div class="grid"></div><div class="light"></div><div class="shade"></div></div>
+  <div id="bgWarm" class="bgl"><div class="grid"></div><div class="light"></div><div class="shade"></div></div>
+  <div id="parts"></div>
+  <div id="cam" class="abs" style="inset:0;transform-origin:50% 45%">
+
+  <!-- A: phone on workbench -->
+  <div class="scene" id="sA">
+    <div id="bench" class="abs" style="left:-60px;top:1330px;width:1200px;height:700px;border-radius:40px;background:linear-gradient(180deg,#c9986a 0%,#b07d50 40%,#8f5f38 100%);box-shadow:0 -10px 40px rgba(0,0,0,.15)">
+      <div class="abs" style="left:0;right:0;top:0;height:26px;background:linear-gradient(180deg,#ddb287,#c9986a);border-radius:40px 40px 0 0"></div>
+      <div class="abs" style="left:80px;right:120px;top:110px;height:4px;background:rgba(90,50,20,.25);border-radius:4px"></div>
+      <div class="abs" style="left:200px;right:60px;top:230px;height:4px;background:rgba(90,50,20,.2);border-radius:4px"></div>
+      <div class="abs" style="left:40px;right:300px;top:350px;height:4px;background:rgba(90,50,20,.2);border-radius:4px"></div>
+    </div>
+    <img class="emo" id="aHam" src="assets/hammer_3d.png" style="left:20px;top:1180px;width:280px">
+    <img class="emo" id="aWr" src="assets/wrench_3d.png" style="left:800px;top:1200px;width:240px">
+    <img class="emo" id="aNut" src="assets/nut_and_bolt_3d.png" style="left:760px;top:1450px;width:150px">
+    <div id="aPhoneWrap" class="abs" style="left:290px;top:560px;width:500px;height:1020px">
+      <div id="aGlow" class="abs" style="inset:-80px;border-radius:120px;background:radial-gradient(ellipse at center,rgba(37,176,95,.55),rgba(37,176,95,0) 65%)"></div>
+      <div class="phone" id="aPhone" style="left:0;top:0">
+        <div class="isl"></div>
+        <div class="scr" style="background:linear-gradient(180deg,#2b3442 0%,#151a22 100%);color:#fff;text-align:center">
+          <div style="margin-top:130px;font-size:30px;color:#9fb0c4;font-weight:600;letter-spacing:1px">KUNDE RUFT AN</div>
+          <div style="font-size:58px;font-weight:700;margin-top:16px">Neuer Kunde</div>
+          <div style="font-size:28px;color:#9fb0c4;margin-top:6px">Mobil · 0171 …</div>
+          <div id="aRing" class="abs" style="left:50%;top:420px;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;border:4px solid rgba(37,176,95,.8)"></div>
+          <div id="aRing2" class="abs" style="left:50%;top:420px;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;border:4px solid rgba(37,176,95,.8)"></div>
+          <div class="abs" style="left:50%;top:420px;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;background:linear-gradient(135deg,#7d8ea3,#56657a);display:flex;align-items:center;justify-content:center;font-size:84px;font-weight:700">?</div>
+          <div class="abs" style="left:0;right:0;bottom:120px;display:flex;justify-content:space-around;padding:0 40px">
+            <div class="btn" style="background:#E5484D"><svg width="64" height="64" viewBox="0 0 24 24"><path d="M3 15.5c5-4.6 13-4.6 18 0l-2.4 2.6-3.6-1.6v-2.4c-2.2-.7-3.8-.7-6 0v2.4L5.4 18z" fill="#fff"/></svg></div>
+            <div class="btn" id="aAcc" style="background:#25B05F"><svg width="64" height="64" viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z" fill="#fff"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chip" id="aJob" style="left:0;top:0;height:120px;font-size:38px"><img src="assets/page_facing_up_3d.png" style="width:76px"><div>Auftrag<div style="font-size:28px;color:var(--green);font-weight:800">+ 4.800 €</div></div></div>
+  </div>
+
+  <!-- B: on the roof -->
+  <div class="scene" id="sB">
+    <svg class="abs" style="left:0;top:0" width="1080" height="1920"><path id="bBand" d="M-200 1500 C 300 1300, 700 1650, 1300 1350" fill="none" stroke="#9AA6B5" stroke-opacity=".45" stroke-width="150" stroke-linecap="round"/></svg>
+    <img class="emo" id="bHouse" src="assets/house_3d.png" style="left:150px;top:720px;width:780px">
+    <img class="emo" id="bLad" src="assets/ladder_3d.png" style="left:700px;top:820px;width:380px">
+    <img class="emo" id="bMan" src="assets/man_construction_worker_3d_default.png" style="left:330px;top:500px;width:330px">
+    <img class="emo" id="bBox" src="assets/toolbox_3d.png" style="left:260px;top:700px;width:170px">
+    <img class="emo" id="bHam" src="assets/hammer_3d.png" style="left:580px;top:690px;width:150px">
+    <div class="chip" id="bCall" style="left:620px;top:470px;height:110px"><img src="assets/mobile_phone_3d.png" style="width:64px">klingelt…</div>
+    <svg id="bWaves" class="abs" style="left:880px;top:450px" width="150" height="150"><path d="M20 40 a50 50 0 0 1 0 70" fill="none" stroke="#E5484D" stroke-width="8" stroke-linecap="round"/><path d="M50 20 a80 80 0 0 1 0 110" fill="none" stroke="#E5484D" stroke-width="8" stroke-linecap="round"/></svg>
+    <div class="chip" id="bNo" style="left:300px;top:1400px;height:110px;background:var(--ink);color:#fff"><img src="assets/cross_mark_3d.png" style="width:60px">Nicht erreichbar</div>
+  </div>
+
+  <!-- C: split missed vs competitor -->
+  <div class="scene" id="sC">
+    <div class="lbl" id="cL1" style="left:150px;top:640px">Du</div>
+    <div class="lbl" id="cL2" style="left:620px;top:640px;background:var(--green)">Konkurrent</div>
+    <div class="phone" id="cP1" style="left:40px;top:720px;transform-origin:50% 0">
+      <div class="isl"></div>
+      <div class="scr" style="background:#f6f7f9">
+        <div style="margin:110px 34px 0;font-size:44px;font-weight:700">Anrufe</div>
+        <div id="cList" style="margin:20px 26px"></div>
+      </div>
+    </div>
+    <div class="phone" id="cP2" style="left:540px;top:720px;transform-origin:50% 0">
+      <div class="isl"></div>
+      <div class="scr" style="background:linear-gradient(180deg,#1f8f52,#0f5c33);color:#fff;text-align:center">
+        <div style="margin-top:140px;font-size:28px;font-weight:600;opacity:.8;letter-spacing:1px">VERBUNDEN</div>
+        <div style="font-size:50px;font-weight:700;margin-top:12px">Dein Kunde</div>
+        <div id="cTimer" style="font-size:40px;margin-top:10px;font-weight:600">00:00</div>
+        <div class="abs" style="left:50%;top:520px;width:220px;height:220px;margin:-110px 0 0 -110px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center"><img src="assets/telephone_receiver_3d.png" style="width:130px"></div>
+      </div>
+    </div>
+    <img class="emo" id="cHappy" src="assets/grinning_face_with_big_eyes_3d.png" style="left:820px;top:600px;width:230px">
+    <div class="chip" id="cDay" style="left:200px;top:1490px;height:110px;gap:14px"><img src="assets/spiral_calendar_3d.png" style="width:64px"><span class="dd">Mo</span><span class="dd">Di</span><span class="dd">Mi</span><span class="dd">Do</span><span class="dd">Fr</span></div>
+    <div id="cBadge" class="abs" style="left:380px;top:680px;width:110px;height:110px;border-radius:50%;background:var(--red);color:#fff;font-weight:800;font-size:54px;display:flex;align-items:center;justify-content:center;box-shadow:0 16px 30px -10px rgba(229,72,77,.7)">1</div>
+  </div>
+
+  <!-- D: solution title -->
+  <div class="scene" id="sD">
+    <svg class="abs" style="left:0;top:0" width="1080" height="1920"><path id="dBand" d="M-200 1250 C 300 900, 800 1500, 1300 1000" fill="none" stroke="#F7983A" stroke-width="160" stroke-linecap="round"/></svg>
+    <div id="dPre" class="abs" style="left:0;width:1080px;top:300px;text-align:center;font-family:Play;font-style:italic;font-size:84px">Die Lösung:</div>
+    <div id="dT1" class="abs" style="left:0;width:1080px;top:420px;text-align:center;font-weight:800;font-size:132px;letter-spacing:-4px;line-height:1.05">KI-Telefon-</div>
+    <div id="dT2" class="abs" style="left:0;width:1080px;top:560px;text-align:center;font-weight:800;font-size:132px;letter-spacing:-4px;line-height:1.05;color:var(--or)">assistent</div>
+    <div id="dCore" class="abs" style="left:290px;top:760px;width:500px;height:500px">
+      <svg class="abs" width="500" height="500"><circle id="dR1" cx="250" cy="250" r="235" fill="none" stroke="#F7983A" stroke-width="6" stroke-dasharray="40 26" stroke-linecap="round" style="transform-origin:250px 250px"/><circle cx="250" cy="250" r="180" fill="#fff"/></svg>
+      <img class="emo" id="dTel" src="assets/telephone_receiver_3d.png" style="left:120px;top:110px;width:260px">
+      <img class="emo" id="dSpark" src="assets/sparkles_3d.png" style="left:330px;top:40px;width:140px">
+    </div>
+    <div class="chip" id="d247" style="left:330px;top:1280px;height:100px;background:var(--ink);color:#fff">24/7 erreichbar</div>
+  </div>
+
+  <!-- E: call screen -->
+  <div class="scene" id="sE">
+    <div class="lbl" id="eHead" style="left:360px;top:250px;background:var(--or);font-size:36px;padding:10px 34px">So funktioniert's</div>
+    <div class="phone" id="ePhone" style="left:30px;top:380px">
+      <div class="isl"></div>
+      <div class="scr" style="background:linear-gradient(180deg,#fff7ef,#f6dcc0);text-align:center">
+        <div id="eStat" style="margin-top:120px;font-size:28px;font-weight:700;color:var(--or);letter-spacing:1px"><span id="eDot" style="display:inline-block;width:16px;height:16px;border-radius:50%;background:var(--or);margin-right:10px"></span><span id="eStatT">WEITERLEITUNG…</span></div>
+        <div style="margin:40px auto 0;width:220px;height:220px;border-radius:50%;background:linear-gradient(135deg,var(--or2),var(--or));display:flex;align-items:center;justify-content:center;box-shadow:0 20px 40px -14px rgba(247,152,58,.8)"><img src="assets/robot_3d.png" style="width:150px"></div>
+        <div style="font-size:44px;font-weight:700;margin-top:30px">KI-Assistent</div>
+        <div style="font-size:26px;color:var(--mute)">für Mustermann Bedachungen</div>
+        <div id="eTimer" style="font-size:34px;font-weight:600;margin-top:10px">00:00</div>
+        <div id="eWave" style="display:flex;align-items:center;justify-content:center;gap:10px;height:160px;margin-top:20px"></div>
+      </div>
+    </div>
+    <div class="chip" id="eFwd" style="left:520px;top:470px;height:96px;font-size:30px"><img src="assets/mobile_phone_with_arrow_3d.png" style="width:56px">Weitergeleitet</div>
+    <div class="bub" id="eB1" style="left:470px;top:640px;max-width:570px;border-bottom-right-radius:8px;background:var(--ink);color:#fff">„Mustermann Bedachungen, guten Tag!“</div>
+    <div class="bub" id="eB2" style="left:500px;top:880px;max-width:540px;border-bottom-left-radius:8px;background:var(--or);color:#fff">„Worum geht es bei Ihnen?“</div>
+    <div class="bub" id="eB3" style="left:560px;top:1080px;border-bottom-right-radius:8px">„Mein Dach ist undicht.“</div>
+  </div>
+
+  <!-- F: messenger -->
+  <div class="scene" id="sF">
+    <div class="phone" id="fPhone" style="left:290px;top:300px">
+      <div class="isl"></div>
+      <div class="scr" style="background:#ECE5DD">
+        <div style="height:190px;background:#128C7E;color:#fff;display:flex;align-items:flex-end;padding:0 30px 24px;gap:18px"><div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,var(--or2),var(--or));display:flex;align-items:center;justify-content:center"><img src="assets/robot_3d.png" style="width:54px"></div><div><div style="font-size:32px;font-weight:700">KI-Assistent</div><div style="font-size:22px;opacity:.85">online</div></div></div>
+        <div id="fMsg" class="abs" style="left:24px;top:230px;width:420px;background:#fff;border-radius:8px 30px 30px 30px;padding:22px 26px;font-size:26px;line-height:1.5;box-shadow:0 4px 10px rgba(0,0,0,.08)">
+          <div class="fl" style="font-size:30px;font-weight:800">📞 Neuer Anruf</div>
+          <div class="fl"><b>Name:</b> Herr Schmidt</div>
+          <div class="fl"><b>Anliegen:</b> Dach undicht nach Sturm</div>
+          <div class="fl"><b>Rückruf:</b> 0171 234 56 78</div>
+          <div class="fl" style="text-align:right;color:#8a9a95;font-size:20px">14:02 ✓✓</div>
+        </div>
+        <div id="fUrg" class="abs" style="left:24px;top:640px;width:420px;background:#fff;border:5px solid var(--red);border-radius:8px 30px 30px 30px;padding:20px 26px;font-size:30px;font-weight:800;color:var(--red)">NOTFALL<div style="font-size:24px;color:var(--ink);font-weight:600">Priorität: hoch · Wasser tritt ein</div></div>
+      </div>
+    </div>
+    <div id="fNote" class="abs" style="left:150px;top:150px;width:780px;height:150px;border-radius:40px;background:rgba(255,255,255,.96);box-shadow:0 30px 50px -20px rgba(0,0,0,.4);display:flex;align-items:center;gap:24px;padding:0 30px">
+      <div style="width:90px;height:90px;border-radius:24px;background:#25D366;display:flex;align-items:center;justify-content:center"><img src="assets/speech_balloon_3d.png" style="width:62px"></div>
+      <div><div style="font-size:32px;font-weight:700">Neuer Anruf · KI-Assistent</div><div style="font-size:26px;color:var(--mute)">Herr Schmidt – Dach undicht …</div></div>
+      <div style="margin-left:auto;font-size:24px;color:var(--mute)">jetzt</div>
+    </div>
+    <img class="emo" id="fSiren" src="assets/police_car_light_3d.png" style="left:790px;top:1060px;width:240px">
+    <div id="fRedGlow" class="abs" style="left:160px;top:700px;width:760px;height:760px;border-radius:50%;background:radial-gradient(circle,rgba(229,72,77,.45),rgba(229,72,77,0) 65%)"></div>
+  </div>
+
+  <!-- G: flowchart -->
+  <div class="scene" id="sG">
+    <svg class="abs" id="gSvg" style="left:0;top:0" width="1080" height="1920"></svg>
+    <div class="node gn" style="left:110px;top:660px"><img src="assets/telephone_receiver_3d.png"><b>Anruf</b></div>
+    <div class="node gn" style="left:740px;top:780px"><img src="assets/robot_3d.png"><b>KI</b></div>
+    <div class="node gn" style="left:110px;top:1080px"><img src="assets/speech_balloon_3d.png"><b>WhatsApp</b></div>
+    <div class="node gn" style="left:740px;top:1200px;border:6px solid var(--or)"><img src="assets/spiral_calendar_3d.png"><b>Kalender</b></div>
+    <div class="chip" id="gEv" style="left:380px;top:1530px;height:120px;font-size:32px"><img src="assets/check_mark_button_3d.png" style="width:60px"><div>Rückruf eingetragen<div style="font-size:26px;color:var(--or);font-weight:700">Do · 14:00 Uhr</div></div></div>
+  </div>
+
+  <!-- H: before / after -->
+  <div class="scene" id="sH">
+    <svg class="abs" style="left:0;top:0" width="1080" height="1920"><path id="hBand" d="M640 420 C 520 800, 600 1100, 430 1700" fill="none" stroke="#F7983A" stroke-width="120" stroke-linecap="round"/></svg>
+    <div class="card" id="hL" style="left:60px;top:700px;width:460px;height:640px;background:#eef0f3;text-align:center">
+      <img id="hLe" src="assets/face_with_steam_from_nose_3d.png" style="width:260px;margin-top:80px;filter:drop-shadow(0 20px 20px rgba(0,0,0,.25))">
+      <div style="font-size:40px;font-weight:700;margin-top:30px;color:#6b7380">gestresst</div>
+      <div class="chip" style="position:relative;display:inline-flex;margin-top:30px;height:80px;font-size:30px;color:var(--red)"><img src="assets/mobile_phone_3d.png" style="width:44px"><span id="hMiss">7</span>&nbsp;verpasst</div>
+    </div>
+    <div class="card" id="hR" style="left:560px;top:700px;width:460px;height:640px;text-align:center">
+      <img id="hRe" src="assets/smiling_face_with_sunglasses_3d.png" style="width:260px;margin-top:80px;filter:drop-shadow(0 20px 20px rgba(110,60,20,.3))">
+      <div style="font-size:40px;font-weight:700;margin-top:30px">entspannt</div>
+      <div class="chip" style="position:relative;display:inline-flex;margin-top:30px;height:80px;font-size:30px;color:var(--green);background:#eafaf1"><img src="assets/check_mark_button_3d.png" style="width:44px">0 verloren</div>
+    </div>
+    <div class="lbl" id="hl1" style="left:200px;top:660px">Vorher</div>
+    <div class="lbl" id="hl2" style="left:690px;top:660px;background:var(--or)">Nachher</div>
+  </div>
+
+  <!-- I: CTA -->
+  <div class="scene" id="sI">
+    <svg class="abs" style="left:0;top:0" width="1080" height="1920"><path id="iBand" d="M-200 1350 C 300 1150, 700 1600, 1300 1280" fill="none" stroke="#F7983A" stroke-width="150" stroke-linecap="round"/></svg>
+    <img class="emo" id="iHead" src="assets/headphone_3d.png" style="left:370px;top:640px;width:340px">
+    <svg id="iWaves" class="abs" style="left:0;top:0" width="1080" height="1920"></svg>
+    <div class="card" id="iBox" style="left:90px;top:1080px;width:900px;height:150px;border-radius:75px;display:flex;align-items:center;padding:0 24px 0 40px;gap:20px">
+      <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#c9d2dc,#9aa6b5)"></div>
+      <div style="font-size:44px;font-weight:600;flex:1"><span id="iTxt" style="color:#b8aa9c">Kommentar hinzufügen…</span><span id="iCaret" style="display:inline-block;width:4px;height:50px;background:var(--or);vertical-align:middle;margin-left:4px"></span></div>
+      <div id="iSend" style="width:100px;height:100px;border-radius:50%;background:var(--or);display:flex;align-items:center;justify-content:center"><svg width="50" height="50" viewBox="0 0 24 24"><path d="M3 11.5 20.5 3 14 21l-2.7-7.3z" fill="#fff"/></svg></div>
+    </div>
+    <div class="card" id="iPost" style="left:90px;top:1280px;width:900px;height:170px;display:flex;align-items:center;padding:0 40px;gap:24px">
+      <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#c9d2dc,#9aa6b5)"></div>
+      <div><div style="font-size:26px;color:var(--mute);font-weight:600">du · gerade eben</div><div style="font-size:50px;font-weight:800">Anruf</div></div>
+      <svg id="iHeart" style="margin-left:auto" width="80" height="80" viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z" fill="#F7983A"/></svg>
+    </div>
+    <div id="burst"></div>
+  </div>
+  </div>
+
+  <div id="flash" class="abs" style="inset:0;background:#F7983A;z-index:30;display:none"></div>
+  <div id="caps"></div>
+  <svg id="cursor" viewBox="0 0 24 24"><path d="M4 2.5l15 8.6-6.4 1.6-3.3 6.1z" fill="#fff" stroke="#2A2420" stroke-width="1.6" stroke-linejoin="round"/></svg>
+</div>
+
+<script src="words.js"></script>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const cl=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const P=(t,a,b)=>cl((t-a)/(b-a));
+const E={oc:t=>1-Math.pow(1-t,3),ic:t=>t*t*t,io:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,ox:t=>t>=1?1:1-Math.pow(2,-10*t),
+  ob:t=>{const c1=1.9,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2)},
+  el:t=>t<=0?0:t>=1?1:Math.pow(2,-9*t)*Math.sin((t*10-.75)*2.094)+1};
+const L=(a,b,p)=>a+(b-a)*p;
+function T(el,o){const {x=0,y=0,s=1,r=0,o:op=1,b=0}=o;
+  el.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`; el.style.opacity=op; el.style.filter=b>0.05?`blur(${b}px)`:'';}
+function pop(el,t,a,{x=0,y=0,r=0,s=1,bob=1,shadow=true}={}){
+  const p=P(t,a,a+.55), e=E.ob(p);
+  T(el,{x,y:y+(1-p)*60+Math.sin(t*2.2+a)*10*bob,r:r+Math.sin(t*1.7+a)*4*bob,s:s*Math.max(0,e),o:p>0?1:0});
+  if(shadow) el.style.filter=(p>0?'drop-shadow(0 24px 22px rgba(60,50,40,.32))':'')+(p<.4?` blur(${(1-p/.4)*6}px)`:'');
+}
+function band(path,t,a,dur=.8){const len=path.getTotalLength();path.style.strokeDasharray=len+' '+len;path.style.strokeDashoffset=len*(1-E.io(P(t,a,a+dur)));}
+
+/* words */
+const WR=window.WORDS_RAW.map(([w,t])=>({txt:w,t:t-0.04}));
+const W=(txt,n=0)=>WR.filter(w=>w.txt.replace(/[,.!?:„“"]/g,'')===txt)[n].t;
+const ACC={'verpasste':'r','Auftrag,':'r','Konkurrent':'r','Dach,':'r','ran.':'r','Nächsten':'r','jeden':'r','Tag.':'r',
+  'ran,':'o','Firmennamen,':'o','WhatsApp':'o','Priorität.':'o','Kalender':'o','Ruhe':'o','keinen':'o','Kunden':'o','„Anruf“':'o','klingt?':'o'};
+const BLOCKS=[[0,4.45,300],[4.6,9.25,300],[9.35,14.95,300],[18.25,22.6,1460],[22.8,26.7,1500],[26.75,32.95,1500],[33.0,39.5,1530],[39.55,42.0,1530],[42.05,46.3,320],[46.4,50.85,300],[50.9,57.5,300]];
+const SKIP=[15.0,18.2]; // title words handled by scene D
+const BL=BLOCKS.map(([a,b,y])=>{const d=document.createElement('div');d.className='cap';d.style.top=y+'px';$('#caps').appendChild(d);return {a,b,el:d,words:[]}});
+WR.forEach(w=>{ if(w.t>=SKIP[0]&&w.t<SKIP[1]) return;
+  const B=BL.find(B=>w.t>=B.a-.06&&w.t<B.b); if(!B) return;
+  const s=document.createElement('span'); s.className='w'; s.textContent=w.txt;
+  if(ACC[w.txt]) s.classList.add('acc',ACC[w.txt]);
+  B.el.appendChild(s); B.el.appendChild(document.createTextNode(' ')); w.el=s; B.words.push(w);
+  if(B.a<50 && B.b-B.a>0 && B.words.length>12) B.el.style.fontSize='58px';
+});
+function caps(t){
+  BL.forEach(B=>{const vis=t>=B.a-.2&&t<B.b+.25; B.el.style.display=vis?'block':'none'; if(!vis)return;
+    const q=P(t,B.b-.05,B.b+.2); B.el.style.opacity=1-q; B.el.style.transform=`translateY(${-q*30}px)`; B.el.style.filter=q>0?`blur(${q*10}px)`:'';
+    B.words.forEach(w=>{const p=P(t,w.t,w.t+.32),e=E.oc(p); T(w.el,{y:(1-e)*34,o:p,b:(1-p)*10,s:L(.9,1,e)});});});
+}
+
+/* build */
+(function(){
+  for(let i=0;i<5;i++)$('#cList').insertAdjacentHTML('beforeend',`<div class="mc" style="display:flex;align-items:center;gap:16px;background:#fff;border-radius:22px;padding:16px 18px;margin-bottom:14px;box-shadow:0 6px 14px rgba(0,0,0,.06)"><div style="width:62px;height:62px;border-radius:50%;background:#fde8e8;display:flex;align-items:center;justify-content:center"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M3 15.5c5-4.6 13-4.6 18 0l-2.4 2.6-3.6-1.6v-2.4c-2.2-.7-3.8-.7-6 0v2.4L5.4 18z" fill="#E5484D"/></svg></div><div><div style="font-size:27px;font-weight:700;color:#E5484D">Verpasster Anruf</div><div style="font-size:21px;color:#8a8f98">${['Mo','Di','Mi','Do','Fr'][i]} · ${['08:14','10:42','13:05','09:31','15:20'][i]}</div></div></div>`);
+  for(let i=0;i<22;i++)$('#eWave').insertAdjacentHTML('beforeend','<i style="display:block;width:10px;border-radius:6px;background:var(--or)"></i>');
+  const svg=$('#gSvg'); const C=[[225,775],[855,895],[225,1195],[855,1315]];
+  for(let i=0;i<3;i++){const [x1,y1]=C[i],[x2,y2]=C[i+1]; const dx=x2>x1?1:-1;
+    svg.insertAdjacentHTML('beforeend',`<path class="gl" d="M${x1+dx*120} ${y1} C ${(x1+x2)/2} ${y1-40}, ${(x1+x2)/2} ${y2+40}, ${x2-dx*125} ${y2}" fill="none" stroke="#F7983A" stroke-width="12" stroke-linecap="round"/><circle class="gp" r="14" fill="#fff" stroke="#F7983A" stroke-width="6"/>`);}
+  for(let i=0;i<3;i++)$('#iWaves').insertAdjacentHTML('beforeend',`<path class="iw" d="M${760+i*40} ${700-i*20} a${110+i*45} ${110+i*45} 0 0 1 0 ${250+i*40}" fill="none" stroke="#F7983A" stroke-width="10" stroke-linecap="round"/><path class="iw" d="M${320-i*40} ${700-i*20} a${110+i*45} ${110+i*45} 0 0 0 0 ${250+i*40}" fill="none" stroke="#F7983A" stroke-width="10" stroke-linecap="round"/>`);
+  for(let i=0;i<10;i++)$('#burst').insertAdjacentHTML('beforeend',`<div class="bp abs" style="width:22px;height:22px;border-radius:50%;background:${i%2?'var(--or)':'#FFD08A'}"></div>`);
+  $$('.light').forEach(l=>[[0,0],[390,0],[0,500],[390,500],[0,1000],[390,1000]].forEach(([x,y])=>l.insertAdjacentHTML('beforeend',`<i style="left:${x}px;top:${y}px"></i>`)));
+  let sd=11;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647;
+  for(let i=0;i<22;i++)$('#parts').insertAdjacentHTML('beforeend',`<div class="pt abs" data-x="${rn()*1080}" data-y="${rn()*1920}" data-v="${rn()*30+10}" data-s="${rn()}" style="left:0;top:0;width:${(rn()*14+6)|0}px;height:${(rn()*14+6)|0}px;border-radius:50%;background:${i%3?'rgba(255,255,255,.8)':'rgba(247,152,58,.6)'};filter:blur(${(rn()*3)|0}px)"></div>`);
+})();
+
+const SC=[['#sA',0,4.5],['#sB',4.45,9.3],['#sC',9.25,15.0],['#sD',14.95,22.65],['#sE',22.6,32.95],['#sF',32.9,41.95],['#sG',41.9,46.35],['#sH',46.3,50.85],['#sI',50.8,60]];
+function sceneEnv(el,t,a,b,first){
+  if(t<a-0.01||t>b){el.style.display='none';return false}
+  el.style.display='block';
+  const pi=first?1:P(t,a,a+.4), po=P(t,b-.28,b);
+  el.style.transform=`scale(${L(.86,1,E.oc(pi))*L(1,1.45,E.ic(po))})`; el.style.opacity=Math.min(pi*1.6,1)*(1-po);
+  const bl=(1-pi)*16+po*18; el.style.filter=bl>.05?`blur(${bl}px)`:''; return true;
+}
+const cur=$('#cursor'); function cursorAt(x,y,o=1,s=1){T(cur,{x,y,o,s})}
+const SHIFT=14.95; // colour change cool -> warm
+
+function render(t){
+  // background + colour shift
+  const sp=E.io(P(t,SHIFT,SHIFT+.75));
+  $('#bgWarm').style.clipPath=`circle(${sp*1400}px at 540px 960px)`; $('#bgWarm').style.display=sp>0?'':'none';
+  $$('.light').forEach(l=>l.style.transform=`translate(${Math.sin(t*.25)*30-t*3}px,${Math.cos(t*.2)*20}px) rotate(-14deg) skewX(-8deg)`);
+  $$('.grid').forEach(g=>g.style.transform=`translate(${-(t*6)%78}px,${-(t*3)%78}px)`);
+  $$('#parts .pt').forEach(p=>{const v=+p.dataset.v;T(p,{x:+p.dataset.x+Math.sin(t*.8+ +p.dataset.s*9)*30,y:((+p.dataset.y-t*v)%1920+1920)%1920,o:(.3+.35*Math.sin(t+ +p.dataset.s*7))*(t<SHIFT?.6:1)});});
+  let k=0; SC.forEach(([,a])=>{if(a>0){const p=P(t,a,a+.5); if(p>0&&p<1)k=Math.max(k,1-E.oc(p));}});
+  $('#cam').style.transform=`scale(${1+.025*Math.sin(t*.6)+k*.07}) rotate(${Math.sin(t*.45)*.8+k*1.2}deg) translate(${Math.sin(t*.37)*10}px,${Math.cos(t*.29)*12}px)`;
+  const fl=P(t,SHIFT-.05,SHIFT+.05)-P(t,SHIFT+.05,SHIFT+.35); $('#flash').style.display=fl>0?'':'none'; $('#flash').style.opacity=fl*.35;
+  cursorAt(-200,-200,0);
+  caps(t);
+
+  // A
+  if(sceneEnv($('#sA'),t,0,4.5,true)){
+    const z=E.ox(P(t,0,.9));
+    const ring=t<W('holt')+.2;
+    const vib=ring?Math.sin(t*90)*3*(Math.sin(t*6)>0?1:0):0;
+    $('#aPhoneWrap').style.transform=`perspective(1800px) rotateX(${L(0,10,z)}deg) rotateY(${-6+Math.sin(t*1.2)*3}deg) translateY(${L(-80,0,z)}px) scale(${L(1.6,.8,z)}) translateX(${vib}px) rotate(${vib*.3}deg)`;
+    $('#aPhoneWrap').style.transformOrigin='250px 300px';
+    $('#aPhoneWrap').style.filter=z<.98?`blur(${(1-z)*10}px)`:'';
+    $('#aGlow').style.opacity=.6+.4*Math.sin(t*6);
+    [['#aRing',0],['#aRing2',.6]].forEach(([id,o])=>{const q=((t+o)%1.2)/1.2; T($(id),{s:L(1,1.9,q),o:1-q});});
+    T($('#aAcc'),{s:1+.08*Math.sin(t*8)});
+    T($('#bench'),{y:L(200,0,E.oc(P(t,0,.8)))});
+    pop($('#aHam'),t,.35,{r:-20}); pop($('#aWr'),t,.5,{r:25}); pop($('#aNut'),t,.65,{r:0});
+    const j0=W('Auftrag'), j1=W('Konkurrent');
+    const jp=E.ob(P(t,j0,j0+.5)), fly=E.ic(P(t,j1,j1+.7));
+    T($('#aJob'),{x:L(330,1300,fly),y:L(1180,500,fly)-(1-P(t,j0,j0+.5))*40,s:Math.max(0,jp),r:L(-4,25,fly),o:P(t,j0,j0+.1)});
+  }
+  // B
+  if(sceneEnv($('#sB'),t,4.45,9.3)){
+    band($('#bBand'),t,4.5,.9);
+    pop($('#bHouse'),t,4.55,{bob:.3}); pop($('#bLad'),t,4.75,{r:8,bob:.3});
+    pop($('#bMan'),t,W('stehst')-.1,{bob:.6}); pop($('#bBox'),t,W('Dach')-.1,{r:-10}); pop($('#bHam'),t,W('Dach'),{r:20});
+    const c0=W('Handy'); const cp=P(t,c0,c0+.5);
+    const sh=t>c0?Math.sin(t*70)*5*(Math.sin(t*7)>0?1:0):0;
+    T($('#bCall'),{s:E.ob(cp),o:cp>0?1:0,x:sh,r:sh*.6});
+    $('#bWaves').style.opacity=cp>0?(.5+.5*Math.sin(t*12)):0;
+    const n=P(t,W('kannst')-.1,W('kannst')+.4); T($('#bNo'),{s:E.ob(n),o:n>0?1:0,r:-3});
+  }
+  // C
+  if(sceneEnv($('#sC'),t,9.25,15.0)){
+    const p1=E.ob(P(t,9.3,9.85)), p2=E.ob(P(t,W('Nächsten')-.3,W('Nächsten')+.25));
+    $('#cP1').style.transform=`scale(${.82*Math.max(0,p1)}) rotate(${-4+Math.sin(t*1.3)*1}deg)`; $('#cP1').style.opacity=p1>0?1:0;
+    $('#cP2').style.transform=`scale(${.82*Math.max(0,p2)}) rotate(${4+Math.sin(t*1.5)*1}deg)`; $('#cP2').style.opacity=p2>0?1:0;
+    T($('#cL1'),{s:E.ob(P(t,9.6,10)),r:-5}); T($('#cL2'),{s:E.ob(P(t,W('Nächsten'),W('Nächsten')+.4)),r:4});
+    const sec=Math.max(0,t-(W('Nächsten')))*1; $('#cTimer').textContent='00:'+String(Math.floor(sec*2)).padStart(2,'0');
+    pop($('#cHappy'),t,W('Nächsten')+.2,{r:10});
+    const g=W('Genau'); const days=$$('#cDay .dd');
+    const dc=P(t,g-.2,g+.3); T($('#cDay'),{s:E.ob(dc),o:dc>0?1:0});
+    let shown=0;
+    $$('#cList .mc').forEach((m,i)=>{const at=i==0?9.6:g+.2+(i-1)*.55; const p=P(t,at,at+.35); if(p>0)shown=i+1; T(m,{o:p,x:(1-E.oc(p))*-60,s:L(.9,1,E.ob(p))});});
+    days.forEach((d,i)=>{const on=i<shown; d.style.color=on?'#E5484D':'#b5bcc6'; d.style.fontWeight=on?800:600;});
+    $('#cBadge').textContent=Math.max(1,shown); T($('#cBadge'),{s:E.el(P(t,9.7,10.3))*(1+.12*Math.max(0,Math.sin(t*10))*(t>g?1:0)),o:P(t,9.7,9.8)});
+  }
+  // D
+  if(sceneEnv($('#sD'),t,14.95,22.65,true)){
+    $('#sD').style.opacity=P(t,14.95,15.15);
+    band($('#dBand'),t,15.2,.9);
+    const a=W('Lösung')-.2; T($('#dPre'),{y:(1-E.oc(P(t,a,a+.4)))*30,o:P(t,a,a+.3),b:(1-P(t,a,a+.3))*10});
+    const k1=W('KI-Telefonassistent');
+    const p1=P(t,k1,k1+.45), p2=P(t,k1+.35,k1+.8);
+    T($('#dT1'),{x:(1-E.oc(p1))*-120,o:p1,b:(1-p1)*14}); T($('#dT2'),{x:(1-E.oc(p2))*120,o:p2,b:(1-p2)*14});
+    const cp=E.ob(P(t,k1+.6,k1+1.1)); T($('#dCore'),{s:Math.max(0,cp),o:cp>0?1:0,y:Math.sin(t*1.6)*8});
+    $('#dR1').style.transform=`rotate(${t*40}deg)`;
+    pop($('#dTel'),t,k1+.8,{r:-8}); pop($('#dSpark'),t,k1+1.1,{r:8});
+    const r=P(t,W('ran',1),W('ran',1)+.45); T($('#d247'),{s:E.ob(r),o:r>0?1:0,r:-3});
+  }
+  // E
+  if(sceneEnv($('#sE'),t,22.6,32.95)){
+    T($('#eHead'),{s:E.ob(P(t,22.85,23.3)),r:-3});
+    const pp=E.ob(P(t,22.7,23.3)); $('#ePhone').style.transform=`scale(${.74*Math.max(0,pp)}) rotate(${Math.sin(t*1.2)*1.5}deg) translateY(${Math.sin(t*1.6)*8}px)`; $('#ePhone').style.opacity=pp>0?1:0;
+    const fw=W('weitergeleitet'); const on=t>fw+.4;
+    $('#eStatT').textContent=on?'KI-ASSISTENT SPRICHT':'WEITERLEITUNG…'; $('#eStat').style.color=on?'#25B05F':'#F7983A'; $('#eDot').style.background=on?'#25B05F':'#F7983A';
+    $('#eDot').style.opacity=.4+.6*Math.abs(Math.sin(t*4));
+    const s=Math.max(0,t-fw-.4); $('#eTimer').textContent='00:'+String(Math.floor(s)).padStart(2,'0');
+    $$('#eWave i').forEach((b,i)=>{const a=on?(.25+.75*Math.abs(Math.sin(t*9+i*.7)*Math.sin(t*3.1+i*.33))):.08; b.style.height=(14+a*130)+'px';});
+    const f=P(t,W('Anruf',1)-.1,W('Anruf',1)+.35); T($('#eFwd'),{s:E.ob(f),o:f>0?1:0,r:-4,y:Math.sin(t*2)*6});
+    [['#eB1',W('begrüßt')-.1,-2],['#eB2',W('fragt')-.05,2],['#eB3',W('geht',1)+.2,-2]].forEach(([id,a,r])=>{const p=P(t,a,a+.45); T($(id),{s:E.ob(p),o:p>0?1:0,r,y:Math.sin(t*2+a)*6});});
+  }
+  // F
+  if(sceneEnv($('#sF'),t,32.9,41.95)){
+    const pp=E.ob(P(t,32.95,33.5));
+    const nu=t>W('Notfällen')?Math.sin(t*60)*4*(Math.sin(t*5)>0?1:0)*(1-P(t,W('Notfällen')+1.2,W('Notfällen')+1.6)):0;
+    $('#fPhone').style.transform=`scale(${.92*Math.max(0,pp)}) rotate(${Math.sin(t*1.2)*1.2+nu*.3}deg) translate(${nu}px,${Math.sin(t*1.6)*8}px)`; $('#fPhone').style.opacity=pp>0?1:0;
+    const n0=W('Danach')-.05, n=P(t,n0,n0+.5), nout=P(t,n0+1.6,n0+2.0);
+    T($('#fNote'),{y:L(-260,0,E.ob(n))+L(0,-260,E.ic(nout)),o:n>0?1-nout:0});
+    const m0=W('WhatsApp')-.1; const mp=P(t,m0,m0+.4); T($('#fMsg'),{o:mp,y:(1-E.oc(mp))*40,s:L(.9,1,E.ob(mp))});
+    $$('#fMsg .fl').forEach((l,i)=>{const p=P(t,m0+.15+i*.28,m0+.45+i*.28); T(l,{o:p,x:(1-E.oc(p))*-20});});
+    const u0=W('Notfällen')-.05, up=P(t,u0,u0+.45); T($('#fUrg'),{o:up>0?1:0,s:E.ob(up)*(1+.04*Math.sin(t*10)*P(t,u0+.5,u0+.6))});
+    pop($('#fSiren'),t,u0+.1,{r:8});
+    $('#fRedGlow').style.opacity=up>0?(.35+.35*Math.sin(t*10))*up:0;
+  }
+  // G
+  if(sceneEnv($('#sG'),t,41.9,46.35)){
+    const g0=41.95, step=[g0,g0+.25,W('KI')-.1,W('Kalender')-.15];
+    $$('#sG .gn').forEach((n,i)=>{const p=P(t,step[i],step[i]+.5); T(n,{s:Math.max(0,E.ob(p)),o:p>0?1:0,y:Math.sin(t*1.8+i)*7});});
+    $$('#sG .gl').forEach((l,i)=>band(l,t,step[i]+.2,Math.max(.3,step[i+1]-step[i]-.1)));
+    $$('#sG .gp').forEach((c,i)=>{const l=$$('#sG .gl')[i]; const len=l.getTotalLength(); const st=step[i+1]+.2; const on=t>st; const q=on?((t-st)/1.1)%1:0; const pt=l.getPointAtLength(len*E.io(q)); c.setAttribute('cx',pt.x);c.setAttribute('cy',pt.y);c.style.opacity=on?1:0;});
+    const ev=P(t,W('Kalender')+.15,W('Kalender')+.6); T($('#gEv'),{s:E.ob(ev),o:ev>0?1:0,r:-2});
+  }
+  // H
+  if(sceneEnv($('#sH'),t,46.3,50.85)){
+    band($('#hBand'),t,46.35,.7);
+    const lp=E.ob(P(t,46.4,46.9)), rp=E.ob(P(t,46.55,47.05));
+    const stress=Math.sin(t*40)*3*(t<W('verlierst')?1:.3);
+    T($('#hL'),{x:(1-lp)*-500+stress,r:L(-10,-3,lp)}); T($('#hR'),{x:(1-rp)*500,r:L(10,2,rp)});
+    T($('#hl1'),{s:E.ob(P(t,46.8,47.2)),r:-8}); T($('#hl2'),{s:E.ob(P(t,46.95,47.35)),r:4});
+    T($('#hRe'),{s:1+.12*(P(t,W('Ruhe'),W('Ruhe')+.15)-P(t,W('Ruhe')+.15,W('Ruhe')+.5)),r:Math.sin(t*2)*4});
+    T($('#hLe'),{s:1,r:Math.sin(t*25)*3});
+  }
+  // I
+  if(sceneEnv($('#sI'),t,50.8,60)){
+    band($('#iBand'),t,50.85,.9);
+    pop($('#iHead'),t,50.95,{r:-6});
+    const h=W('hören'); $$('#iWaves .iw').forEach((w,i)=>{const q=((t-h-(i>>1)*.15)/0.9); const on=t>h; const f=on?(q%1):0; w.style.opacity=on?(1-f)*.9:0; w.style.transformOrigin='540px 810px'; w.style.transform=`scale(${1+f*.15})`;});
+    const bx=E.ob(P(t,W('klingt')-.1,W('klingt')+.4)); T($('#iBox'),{s:Math.max(0,bx),o:bx>0?1:0,y:(1-P(t,W('klingt')-.1,W('klingt')+.4))*60});
+    const word='Anruf', ty0=W('Schreib')+.1; const n=Math.floor(cl((t-ty0)/.09,0,5));
+    $('#iTxt').textContent=n>0?word.slice(0,n):'Kommentar hinzufügen…'; $('#iTxt').style.color=n>0?'#2A2420':'#b8aa9c';
+    $('#iCaret').style.opacity=(Math.floor(t*3)%2)?1:0;
+    const send=ty0+.75; const c1=E.io(P(t,ty0-.3,send-.1));
+    if(t>ty0-.35&&t<send+.6) cursorAt(L(700,900,c1),L(1700,1150,c1),P(t,ty0-.35,ty0-.2)*(1-P(t,send+.3,send+.6)),1-.15*(P(t,send-.05,send)-P(t,send+.08,send+.18)));
+    T($('#iSend'),{s:1-.15*(P(t,send-.05,send)-P(t,send+.08,send+.25))});
+    const po=P(t,send+.05,send+.5); T($('#iPost'),{s:Math.max(0,E.ob(po)),o:po>0?1:0,y:(1-E.oc(po))*-40});
+    const hp=P(t,send+.4,send+.9); T($('#iHeart'),{s:hp>0?L(1.6,1,E.el(hp)):0});
+    $$('#burst .bp').forEach((b,i)=>{const a=i/10*Math.PI*2,p=P(t,send+.4,send+1.0),e=E.oc(p); T(b,{x:895+Math.cos(a)*150*e,y:1355+Math.sin(a)*150*e,s:p>0?L(1.2,0,p):0,o:p>0&&p<1?1:0});});
+  }
+}
+window.render=render;
+window.SFX=()=>{const S=[];const a=(type,t,g=1)=>S.push({type,t:+Math.max(0,t).toFixed(3),g});
+  a('buzz',0.05,.5); a('buzz',1.25,.45); a('buzz',2.45,.4);
+  a('pop',.35,.4); a('pop',.5,.35); a('pop',.65,.3); a('pop',W('Auftrag'),.6); a('whoosh',W('Konkurrent'),.45);
+  a('whoosh',4.45,.45); a('pop',4.55,.4); a('pop',W('stehst')-.1,.5); a('buzz',W('Handy'),.5); a('buzz',W('Handy')+1.1,.4); a('error',W('kannst')-.1,.55);
+  a('whoosh',9.25,.45); a('error',9.6,.4); a('pop',W('Nächsten'),.5); a('ding',W('Nächsten')+.25,.45);
+  const g=W('Genau'); for(let i=1;i<5;i++) a('error',g+.2+(i-1)*.55,.3);
+  a('riser',SHIFT-1.0,.4); a('shimmer',SHIFT,.6); a('pop',W('KI-Telefonassistent')+.8,.6); a('ding',W('ran',1),.5);
+  a('whoosh',22.6,.45); a('pop',22.85,.5); a('pop',W('Anruf',1),.5); a('ring',W('weitergeleitet')+.1,.5);
+  a('pop',W('begrüßt')-.1,.45); a('pop',W('fragt')-.05,.45); a('pop',W('geht',1)+.2,.45);
+  a('whoosh',32.9,.45); a('notify',W('Danach'),.7); a('notify',W('WhatsApp'),.45); a('alert',W('Notfällen'),.55);
+  a('whoosh',41.9,.45); [41.95,42.2,W('KI')-.1,W('Kalender')-.15].forEach(x=>a('pop',x,.45)); a('ding',W('Kalender')+.15,.6);
+  a('whoosh',46.3,.45); a('pop',W('Ruhe'),.4);
+  a('whoosh',50.8,.45); a('pop',50.95,.5); const ty0=W('Schreib')+.1; for(let i=0;i<5;i++)a('type',ty0+i*.09,.5); a('click',ty0+.75,.8); a('pop',ty0+.8,.5); a('ding',ty0+1.15,.6);
+  return S;};
+document.fonts.ready.then(()=>{window.READY=true;render(+new URLSearchParams(location.search).get('t')||0)});
+</script>
+</body>
+</html>
